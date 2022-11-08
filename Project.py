@@ -30,7 +30,7 @@ class ExploreData:
 
      #Prompt user to drop columns
         while col_to_drop  != 'q':
-                col_to_drop = input("\nEnter a Column you'd like to DROP (q to quit): ")
+                col_to_drop = input("\nEnter a Column you'd like to DROP (q to quit): ").upper()
                 if (col_to_drop == 'Q') or (col_to_drop == 'q'):
                     break
                 airline_data.drop(col_to_drop, axis =1,inplace =True)
@@ -47,7 +47,7 @@ class ExploreData:
         col_to_count = ""
         while col_to_count != 'q':
             try:
-                col_to_count= input("\nFor which Column would you like to know the count of DISTINCT VALUES (q to quit): ")
+                col_to_count= input("\nFor which Column would you like to know the count of DISTINCT VALUES (q to quit): ").upper()
                 if (col_to_count == 'q') or (col_to_count == 'Q'):
                     break
                 distinct_val_count = len(pd.unique(airline_data[col_to_count]))
@@ -66,7 +66,7 @@ class ExploreData:
             try:
                 if col_to_sort == 'q' or col_to_sort == 'Q':
                     break
-                col_to_sort = input("\nEnter a column you'd like to be SORTED (q to quit): ")
+                col_to_sort = input("\nEnter a column you'd like to be SORTED (q to quit): ").upper()
                 if col_to_sort == 'q' or col_to_sort == 'Q':
                     break
                 try:
@@ -93,7 +93,7 @@ class ExploreData:
         num_of_rows = 0
         while col_to_print != 'q':
             try:
-                col_to_print = input("Enter a Column You'd like to be PRINTED (q to quit): ")
+                col_to_print = input("Enter a Column You'd like to be PRINTED (q to quit): ").upper()
                 if col_to_print == 'q' or col_to_print == 'Q':
                     #print("Q entered")
                     break
@@ -130,7 +130,7 @@ class ExploreData:
  
 class DescribeData:
     def meanColumn():
-        col_to_mean = input("\nEnter the column you'd like to be be averaged: ")
+        col_to_mean = input("\nEnter the column you'd like to be be averaged: ").upper()
         meanSum = 0
         values = airline_data[col_to_mean].tolist()
         for i in values:
@@ -138,7 +138,7 @@ class DescribeData:
 
         print(meanSum/len(airline_data.axes[0]))
     def minColumn():
-        col_to_min =  input("\nEnter the column you'd like to find the minimum of")
+        col_to_min =  input("\nEnter the column you'd like to find the minimum of").upper()
         lowest = None
         values = airline_data[col_to_min].tolist()
         for i in values:
@@ -149,7 +149,7 @@ class DescribeData:
         #print(lowest)4
         
     def maxColumn():
-        col_to_max =  input("\nEnter the column you'd like to find the maximum of")
+        col_to_max =  input("\nEnter the column you'd like to find the maximum of").upper()
         highest = None
         values = airline_data[col_to_max].tolist()
         for i in values:
@@ -159,6 +159,7 @@ class DescribeData:
                 highest = i 
         print(highest)
         
+    # Menu for part 3
     def describeDataMenu():
         print("\n* Describing the data *\n")
         print(" 1. Mean \n 2. Min \n 3. Max \n 4. Return to main menu")
