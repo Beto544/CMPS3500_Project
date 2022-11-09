@@ -3,7 +3,7 @@
 # ASGT: Class Project
 # ORGN: CSUB - CMPS 3500
 # FILE: c_project.py
-# DATE:10/29/22
+# DATE: 11/08/22
 #*****************************************************************/
 
 # import the pandas library
@@ -95,7 +95,6 @@ class ExploreData:
             try:
                 col_to_print = input("Enter a Column You'd like to be PRINTED (q to quit): ").upper()
                 if col_to_print == 'q' or col_to_print == 'Q':
-                    #print("Q entered")
                     break
                 num_of_rows = int(input("                                     How many rows?: "))
                 #or num_of_rows == 'q' or num_of_rows == 'Q'
@@ -146,7 +145,7 @@ class DescribeData:
                 lowest = i
             elif lowest > i:
                 lowest = i 
-        #print(lowest)4
+        print(lowest)
         
     def maxColumn():
         col_to_max =  input("\nEnter the column you'd like to find the maximum of ").upper()
