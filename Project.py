@@ -138,7 +138,7 @@ class DescribeData:
 
         print(meanSum/len(airline_data.axes[0]))
     def minColumn():
-        col_to_min =  input("\nEnter the column you'd like to find the minimum of").upper()
+        col_to_min =  input("\nEnter the column you'd like to find the minimum of ").upper()
         lowest = None
         values = airline_data[col_to_min].tolist()
         for i in values:
@@ -149,7 +149,7 @@ class DescribeData:
         #print(lowest)4
         
     def maxColumn():
-        col_to_max =  input("\nEnter the column you'd like to find the maximum of").upper()
+        col_to_max =  input("\nEnter the column you'd like to find the maximum of ").upper()
         highest = None
         values = airline_data[col_to_max].tolist()
         for i in values:
@@ -160,7 +160,7 @@ class DescribeData:
         print(highest)
 
     def modeColumn():
-        col_to_mode = input("\nEnter the column you'd like to find the mode(s) of").upper()
+        col_to_mode = input("\nEnter the column you'd like to find the mode(s) of ").upper()
         modes = []
         mode_count = 0
         values = airline_data[col_to_mode].tolist()
@@ -181,7 +181,7 @@ class DescribeData:
         if len(modes) == 1:
             print("The mode is", str(modes)[1:-1], "and it occurs", mode_count, "time(s).")
         else:
-            print("The modes are ", str(modes)[1:-1], " and they occur", mode_count, "time(s).")   
+            print("The modes are", str(modes)[1:-1], "and they occur", mode_count, "time(s).")   
 
         
     # Menu for part 3
