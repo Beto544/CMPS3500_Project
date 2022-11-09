@@ -5,7 +5,7 @@
 # FILE: c_project.py
 # DATE:10/29/22
 #*****************************************************************/
-#test
+
 # import the pandas library
 import pandas as pd
 
@@ -158,11 +158,36 @@ class DescribeData:
             elif i > highest:
                 highest = i 
         print(highest)
+
+    def modeColumn():
+        col_to_mode = input("\nEnter the column you'd like to find the mode(s) of").upper()
+        modes = []
+        mode_count = 0
+        values = airline_data[col_to_mode].tolist()
+        already_checked = []
+        
+        for numb in values:
+            if numb not in already_checked:
+                already_checked.append(numb)
+                mode_temp = values.count(numb)
+                if  mode_temp > mode_count:
+                    mode_count = mode_temp
+                    modes = [numb]
+                elif mode_temp == mode_count and numb not in modes:
+                    modes.append(numb)
+                else: continue
+            else: continue
+
+        if len(modes) == 1:
+            print("The mode is", str(modes)[1:-1], "and it occurs", mode_count, "time(s).")
+        else:
+            print("The modes are ", str(modes)[1:-1], " and they occur", mode_count, "time(s).")   
+
         
     # Menu for part 3
     def describeDataMenu():
         print("\n* Describing the data *\n")
-        print(" 1. Mean \n 2. Min \n 3. Max \n 4. Return to main menu")
+        print(" 1. Mean \n 2. Min \n 3. Max \n 4. Mode \n 5. Return to main menu")
         operation = int(input("\nSelect an Operation: "))
         if operation == 1:
             DescribeData.meanColumn()
@@ -171,6 +196,8 @@ class DescribeData:
         elif operation == 3:
             DescribeData.maxColumn()
         elif operation == 4:
+            DescribeData.modeColumn()
+        elif operation == 5:
             mainMenu()
         else:
             print("Invalid Operation Selected")
