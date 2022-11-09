@@ -183,11 +183,23 @@ class DescribeData:
         else:
             print("The modes are", str(modes)[1:-1], "and they occur", mode_count, "time(s).")   
 
+    def medianColumn():
+        col_to_median = input("\nEnter the column you'd like to find the median of ").upper()
+        values = airline_data[col_to_median].tolist()
+        sorted_values = sorted(values)
+        median = sorted_values[int(len(sorted_values)/2)]
+        median_even = sorted_values[int(len(sorted_values)/2) - 1]
+        if len(values) % 2 == 0:
+            print("The medians numbers are: ", median_even, " and ", median)
+        else:
+            print("median = ", median)
+
+
         
     # Menu for part 3
     def describeDataMenu():
         print("\n* Describing the data *\n")
-        print(" 1. Mean \n 2. Min \n 3. Max \n 4. Mode \n 5. Return to main menu")
+        print(" 1. Mean \n 2. Min \n 3. Max \n 4. Mode \n 5. Median \n 6. Return to main menu")
         operation = int(input("\nSelect an Operation: "))
         if operation == 1:
             DescribeData.meanColumn()
@@ -198,6 +210,8 @@ class DescribeData:
         elif operation == 4:
             DescribeData.modeColumn()
         elif operation == 5:
+            DescribeData.medianColumn()
+        elif operation == 6:
             mainMenu()
         else:
             print("Invalid Operation Selected")
