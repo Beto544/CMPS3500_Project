@@ -24,10 +24,10 @@ class ExploreData:
         print("\nThe columns are: \n")
         for col in airline_data.columns:
             print(col)
-
+            
         print("-----------------------")
         col_to_drop= ""
-
+        
      #Prompt user to drop columns
         while col_to_drop  != 'Q':
                 col_to_drop = input("\nEnter a Column you'd like to DROP (q to quit): ").upper()
@@ -40,7 +40,7 @@ class ExploreData:
                     print(cols)
                     
         ExploreData.exploreDataMenu()
-            
+    
     def countDistinctValues():
     # prompt user for column to count distint values
         print("-----------------------")
@@ -97,17 +97,11 @@ class ExploreData:
                 if col_to_print == 'Q':
                     break
                 num_of_rows = int(input("                                     How many rows?: "))
+                columns = airline_data.columns
+                col_index = columns.get_loc(col_to_print)
+                print(airline_data.iloc[0:num_of_rows,col_index])
             except:
-                print("Invalid input please try again")
-
-    # prints the selected number of rows from the selected column
-        airline_data.columns
-        col_index = airline_data.columns.get_loc(col_to_print)
-        print("col index is %d" % col_index)
-        #print(airline_data.iloc[0:num_of_rows,0])
-        #                      [start_row:end_row,column_Index]
-        print(airline_data.iloc[0:num_of_rows,0])
-        #print(airline_data.columns.get_loc(col_to_print))#
+                print("Invalid column or num rows, try again")
         ExploreData.exploreDataMenu()
 
     # Menu for mode 1, part 2 of the project
@@ -196,8 +190,6 @@ class DescribeData:
         else:
             print("median = ", median)
 
-
-        
     # Menu for part 3
     def describeDataMenu():
         print("\n* Describing the data *\n")
@@ -247,5 +239,6 @@ def mainMenu():
       
     except:
         print("Invalid input entered")
+        
 # starts the program
 mainMenu()
