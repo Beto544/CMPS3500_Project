@@ -29,9 +29,9 @@ class ExploreData:
         col_to_drop= ""
 
      #Prompt user to drop columns
-        while col_to_drop  != 'q':
+        while col_to_drop  != 'Q':
                 col_to_drop = input("\nEnter a Column you'd like to DROP (q to quit): ").upper()
-                if (col_to_drop == 'Q') or (col_to_drop == 'q'):
+                if (col_to_drop == 'Q'):
                     break
                 airline_data.drop(col_to_drop, axis =1,inplace =True)
                 # print updated columns
@@ -45,10 +45,10 @@ class ExploreData:
     # prompt user for column to count distint values
         print("-----------------------")
         col_to_count = ""
-        while col_to_count != 'q':
+        while col_to_count != 'Q':
             try:
                 col_to_count= input("\nFor which Column would you like to know the count of DISTINCT VALUES (q to quit): ").upper()
-                if (col_to_count == 'q') or (col_to_count == 'Q'):
+                if (col_to_count == 'Q'):
                     break
                 distinct_val_count = len(pd.unique(airline_data[col_to_count]))
                 print("\nCount of unique values in %s: %d" % (col_to_count,distinct_val_count))
@@ -62,12 +62,12 @@ class ExploreData:
         col_to_sort = ""
         sorting_method = 1
     #                                      ****** SORTING MULTIPLE COLMUNS SEEMS TO RESORT PREVIOUSOLY SORTED COLUMNS ********** 
-        while col_to_sort != 'q':
+        while col_to_sort != 'Q':
             try:
-                if col_to_sort == 'q' or col_to_sort == 'Q':
+                if col_to_sort == 'Q' :
                     break
                 col_to_sort = input("\nEnter a column you'd like to be SORTED (q to quit): ").upper()
-                if col_to_sort == 'q' or col_to_sort == 'Q':
+                if col_to_sort == 'Q':
                     break
                 try:
                     sorting_method = int(input("Enter 1 for Ascending order or 2 for Descending: "))
@@ -81,7 +81,7 @@ class ExploreData:
                     #continue
                 # ^ SHOULD JUMP BACK TO LINE 69    
                 except:
-                    print("Invalid input")
+                    print("Invalid Column entered")
             except:
                 print("Invalid input please try again") 
         ExploreData.exploreDataMenu()
@@ -91,18 +91,21 @@ class ExploreData:
         print("-----------------------")
         col_to_print = ""
         num_of_rows = 0
-        while col_to_print != 'q':
+        while col_to_print != 'Q':
             try:
-                col_to_print = input("Enter a Column You'd like to be PRINTED (q to quit): ").upper()
-                if col_to_print == 'q' or col_to_print == 'Q':
+                col_to_print = input("Enter a Column you'd like to be PRINTED (q to quit): ").upper()
+                if col_to_print == 'Q':
                     break
                 num_of_rows = int(input("                                     How many rows?: "))
-                #or num_of_rows == 'q' or num_of_rows == 'Q'
             except:
                 print("Invalid input please try again")
 
     # prints the selected number of rows from the selected column
-    #                      [start_row:end_row,column_Index]
+        airline_data.columns
+        col_index = airline_data.columns.get_loc(col_to_print)
+        print("col index is %d" % col_index)
+        #print(airline_data.iloc[0:num_of_rows,0])
+        #                      [start_row:end_row,column_Index]
         print(airline_data.iloc[0:num_of_rows,0])
         #print(airline_data.columns.get_loc(col_to_print))#
         ExploreData.exploreDataMenu()
