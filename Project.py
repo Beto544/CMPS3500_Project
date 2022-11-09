@@ -55,7 +55,22 @@ class ExploreData:
             except:
                 print("Invalid column please try again")
         ExploreData.exploreDataMenu()
-
+        
+    # not finished 
+    def searchColumn():
+        col_to_search = ""
+        while col_to_search != 'Q':
+            try:
+                col_to_search = input("Enter the column you'd like to search inside of (q to quit): ").upper()
+                if col_to_search == 'Q':
+                    break
+                value = input("Enter the value to find: ")
+                #print(airline_data[col_to_search].where(airline_data==[value]))
+                #print(airline_data.where(airline_data.col_to_search == airline_data))
+            except:
+                print("Searching error")
+        ExploreData.exploreDataMenu()
+        
     # prompt user for which column to sort (Ascending or descending)
     def sortColumns():
         print("-----------------------")
@@ -107,17 +122,19 @@ class ExploreData:
     # Menu for mode 1, part 2 of the project
     def exploreDataMenu():
         print("\n* Exploring the data *\n")
-        print(" 1. List & Drop columns \n 2. Count distinct values \n 3. Sort columns \n 4. Print Coumns \n 5. Return to main menu")
+        print(" 1. List & Drop columns \n 2. Count distinct values\n 3. Search for any value in a specified column \n 4. Sort columns \n 5. Print Coumns \n 6. Return to main menu")
         operation = int(input("\nSelect an Operation: "))
         if operation == 1:
             ExploreData.listColumns()
         elif operation == 2:
             ExploreData.countDistinctValues()
         elif operation == 3:
-            ExploreData.sortColumns()
+            ExploreData.searchColumn()
         elif operation == 4:
-            ExploreData.printColmuns()
+            ExploreData.sortColumns()
         elif operation == 5:
+            ExploreData.printColmuns()
+        elif operation == 6:
             mainMenu()
         else:
             print("Invalid Operation Selected")
