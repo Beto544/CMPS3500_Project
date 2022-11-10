@@ -157,7 +157,7 @@ class DescribeData:
             elif i > highest:
                 highest = i 
         print(highest)
-
+    #will optimize later by removing a number from the entire list after it has been checked
     def modeColumn():
         col_to_mode = input("\nEnter the column you'd like to find the mode(s) of ").upper()
         modes = []
@@ -174,8 +174,7 @@ class DescribeData:
                     modes = [numb]
                 elif mode_temp == mode_count and numb not in modes:
                     modes.append(numb)
-                else: continue
-            else: continue
+            
 
         if len(modes) == 1:
             print("The mode is", str(modes)[1:-1], "and it occurs", mode_count, "time(s).")
@@ -189,16 +188,34 @@ class DescribeData:
         median = sorted_values[int(len(sorted_values)/2)]
         median_even = sorted_values[int(len(sorted_values)/2) - 1]
         if len(values) % 2 == 0:
-            print("The medians numbers are: ", median_even, " and ", median)
+            print("The median is ", int((median_even + median)/2))
         else:
-            print("median = ", median)
+            print("The median is ", median)
 
-
+    def uniqueColumn():
+        col_to_unique = input("\nEnter the column you'd like to find the unique(s) of ").upper()
+        uniques = []
+        unique_count = float("inf")
+        values = airline_data[col_to_unique].tolist()
+        already_checked = []
+        for numb in values:
+                if numb not in already_checked:
+                    already_checked.append(numb)
+                    unique_temp = values.count(numb)
+                    if  unique_temp < unique_count:
+                        unique_count = unique_temp
+                        uniques = [numb]
+                    elif unique_temp == unique_count and numb not in uniques:
+                        uniques.append(numb)
+        if len(uniques) == 1:
+            print("The unique is", str(uniques)[1:-1], "and it occurs", unique_count, "time(s).")
+        else:
+            print("The uniques are", str(uniques)[1:-1], "and they occur", unique_count, "time(s).")
         
     # Menu for part 3
     def describeDataMenu():
         print("\n* Describing the data *\n")
-        print(" 1. Mean \n 2. Min \n 3. Max \n 4. Mode \n 5. Median \n 6. Return to main menu")
+        print(" 1. Mean \n 2. Min \n 3. Max \n 4. Mode \n 5. Median \n 6. Unique\n 7. Return to main menu")
         operation = int(input("\nSelect an Operation: "))
         if operation == 1:
             DescribeData.meanColumn()
@@ -211,6 +228,8 @@ class DescribeData:
         elif operation == 5:
             DescribeData.medianColumn()
         elif operation == 6:
+            DescribeData.uniqueColumn()
+        elif operation == 7:
             mainMenu()
         else:
             print("Invalid Operation Selected")
