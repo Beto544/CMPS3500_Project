@@ -225,11 +225,17 @@ class DescribeData:
             print("The unique is", str(uniques)[1:-1], "and it occurs", unique_count, "time(s).")
         else:
             print("The uniques are", str(uniques)[1:-1], "and they occur", unique_count, "time(s).")
+
+    def countColumn():
+        col_to_count = input("\nEnter the column you'd like to find the count of ").upper()
+        values = airline_data[col_to_count].tolist()
+
+        print("The count of the list is", len(values))
         
     # Menu for part 3
     def describeDataMenu():
         print("\n* Describing the data *\n")
-        print(" 1. Mean \n 2. Min \n 3. Max \n 4. Mode \n 5. Median \n 6. Unique\n 7. Return to main menu")
+        print(" 1. Mean \n 2. Min \n 3. Max \n 4. Mode \n 5. Median \n 6. Unique\n 7. Count \n 8. Return to main menu")
         operation = int(input("\nSelect an Operation: "))
         if operation == 1:
             DescribeData.meanColumn()
@@ -244,6 +250,8 @@ class DescribeData:
         elif operation == 6:
             DescribeData.uniqueColumn()
         elif operation == 7:
+            DescribeData.countColumn()
+        elif operation == 8:
             mainMenu()
         else:
             print("Invalid Operation Selected")
