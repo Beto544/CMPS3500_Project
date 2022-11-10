@@ -59,14 +59,34 @@ class ExploreData:
     # not finished 
     def searchColumn():
         col_to_search = ""
+        isNum = "false"
         while col_to_search != 'Q':
             try:
-                col_to_search = input("Enter the column you'd like to search inside of (q to quit): ").upper()
+                col_to_search = input("\nEnter the column you'd like to search inside of (q to quit): ").upper()
                 if col_to_search == 'Q':
                     break
-                value = input("Enter the value to find: ")
-                #print(airline_data[col_to_search].where(airline_data==[value]))
-                #print(airline_data.where(airline_data.col_to_search == airline_data))
+                value = str((input("Enter the value to find: "))).upper()
+                values_ = airline_data[col_to_search].tolist()
+                index = 0
+                matches = 0
+                strings = []
+                index_list = []
+                # converts column into list of strings
+                for element in values_:
+                    strings.append(str(element))
+               # check list for value
+                for i in strings:
+                    index += 1
+                    if i.upper() == value:
+                        index_list.append(index)
+                        matches +=1
+                # if index_list is not empty
+                if index_list:
+                    print("'%s' found %d times in %s" % (value, matches, col_to_search))
+                    first_six = index_list[0:6]
+                    print("First six indexes:", first_six)
+                else:
+                    print("Value not found")
             except:
                 print("Searching error")
         ExploreData.exploreDataMenu()
@@ -258,33 +278,104 @@ class DescribeData:
 
 # End of Part 3
 
+class Analysis:
+    def question1():
+        input1 = ""
+        while input1 != 'Q':
+            input1 = input("\nWork in progress (q to quit): ").upper()
+            
+        Analysis.analysisMenu()
+        
+    def question2():
+        input2 = ""
+        while input2 != 'Q':
+            input2 = input("\nWork in progress (q to quit): ").upper()
+            
+        Analysis.analysisMenu()
+        
+    def question3():
+        input3 = ""
+        while input3 != 'Q':
+            input3 = input("\nWork in progress (q to quit):  ").upper()
+            
+        Analysis.analysisMenu()
+        
+    def question4():
+        input4 = ""
+        while input4!= 'Q':
+            input4 = input("\nWork in progress (q to quit): ").upper()
+            
+        Analysis.analysisMenu()
+        
+    def question5():
+        input5 = ""
+        while input5 != 'Q':
+            input5 = input("\nWork in progress (q to quit): ").upper()
+            
+        Analysis.analysisMenu()
+        
+    def question6():
+        input6 = ""
+        while input6 != 'Q':
+            input6 = input("\nWork in progress (q to quit): ").upper()
+            
+        Analysis.analysisMenu()
+        
+    def analysisMenu():
+        print("\n* Analysis *\n")
+        print("1. What was the month of the year in 2019 with most delays overall? And how many delays were recorded in that month?")
+        print("2. What was the month of the year in 2019 with most delays overall? And how many delays were recorded in that day? ")
+        print("3. What airline carrier experience the most delays in January, July and December ")
+        print("4. What was the average plane age of all planes with delays operated by American Airlines inc.")
+        print("5. How many planes were delayed for more than 15 minutes during days with 'heavy snow' (Days when the inches of snow on ground were 15 or more) )? ")
+        print("6. What are the 5 Airports that had the most delays in 2019?")
+        print("7. Return to main menu")
+        
+        operation = int(input("\nSelect a Question: "))
+        if operation == 1:
+            Analysis.question1()
+        elif operation == 2:
+            Analysis.question2()
+        elif operation == 3:
+            Analysis.question3()
+        elif operation == 4:
+            Analysis.question4()
+        elif operation == 5:
+            Analysis.question5()
+        elif operation == 6:
+            Analysis.question6()
+        elif operation == 7:
+            mainMenu()
+        else:
+            print("Invalid Question Selected")
+
 # everyone should use this Main menu method 
 def mainMenu():
-    try:
-        print("Main Menu\n")
-        print("1. Explore the data \n2. Describe the data \n3. Analysis")
-        mode = int(input("\nSelect a mode: "))
+    while True:
+        try:
+            print("Main Menu\n")
+            print("1. Explore the data \n2. Describe the data \n3. Analysis")
+            mode = int(input("\nSelect a mode: "))
         
-        # Begins Part 2 - Exploring the data 
-        if mode == 1:
-            ExploreData.exploreDataMenu()
+            # Begins Part 2 - Exploring the data 
+            if mode == 1:
+                ExploreData.exploreDataMenu()
         
-        # Begins part 3 - Desribing the data
-        elif mode == 2:
-            junk = 0    # <= useless code 
-            # example 
-            DescribeData.describeDataMenu()
+            #Begins part 3 - Desribing the data
+            elif mode == 2:
+                junk = 0    # <= useless code 
+                # example 
+                DescribeData.describeDataMenu()
         
-        # Begins part 4 - Analysis
-        elif mode == 3:
-            junk = 1   # <= useless code
-            # example
-            # Analysis.analysisMenu()
-        else:
-            print("Invalid mode selected")
+            # Begins part 4 - Analysis
+            elif mode == 3:
+                Analysis.analysisMenu()
+            else:
+                print("** Invalid mode entered **")
+            
       
-    except:
-        print("Invalid input entered")
+        except:
+            print("** Invalid input entered **\n")
         
 # starts the program
 mainMenu()
