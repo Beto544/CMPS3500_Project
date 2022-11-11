@@ -269,7 +269,7 @@ class DescribeData:
     # Menu for part 3
     def describeDataMenu():
         print("\n* Describing the data *\n")
-        print(" 1. Mean \n 2. Min \n 3. Max \n 4. Mode \n 5. Median \n 6. Unique\n 7. Count \n 8. Return to main menu")
+        print(" 1. Mean \n 2. Min \n 3. Max \n 4. Mode \n 5. Median \n 6. Unique\n 7. Percentile \n 8. Count \n 9. Return to main menu")
         operation = int(input("\nSelect an Operation: "))
         if operation == 1:
             DescribeData.meanColumn()
