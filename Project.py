@@ -8,6 +8,7 @@
 
 # import the pandas library
 import pandas as pd
+import math
 
 # load the csv file into a data frame
 airline_data = pd.read_csv('Airline_data.csv')
@@ -251,7 +252,20 @@ class DescribeData:
         values = airline_data[col_to_count].tolist()
 
         print("The count of the list is", len(values))
+
+
+    def percentile():
+        col_to_percentile = input("\nEnter the column you'd like to use percentile operation on ").upper()
+        values = airline_data[col_to_percentile].tolist()
+        perc = int(input("\nEnter the percentile you'd like, 20, 40, 60, etc").upper())
+        #Percentile needs a sorted list
+        values.sort()
         
+        size = len(values)
+        #find the index of the value based on its percentile- size of list * percentage /100
+        result = values[int(math.ceil((size*perc) / 100)) -1]
+        print("\n", result)
+
     # Menu for part 3
     def describeDataMenu():
         print("\n* Describing the data *\n")
@@ -270,8 +284,10 @@ class DescribeData:
         elif operation == 6:
             DescribeData.uniqueColumn()
         elif operation == 7:
-            DescribeData.countColumn()
+            DescribeData.percentile()
         elif operation == 8:
+            DescribeData.countColumn()
+        elif operation == 9:
             mainMenu()
         else:
             print("Invalid Operation Selected")
