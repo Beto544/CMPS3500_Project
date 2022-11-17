@@ -9,6 +9,7 @@
 # import the pandas library
 import pandas as pd
 import math
+import numpy as np
 
 # load the csv file into a data frame
 airline_data = pd.read_csv('Airline_data.csv')
@@ -57,7 +58,6 @@ class ExploreData:
                 print("Invalid column please try again")
         ExploreData.exploreDataMenu()
         
-    # not finished 
     def searchColumn():
         col_to_search = ""
         isNum = "false"
@@ -77,10 +77,11 @@ class ExploreData:
                     strings.append(str(element))
                # check list for value
                 for i in strings:
-                    index += 1
                     if i.upper() == value:
                         index_list.append(index)
                         matches +=1
+                    index += 1
+                    
                 # if index_list is not empty
                 if index_list:
                     print("'%s' found %d times in %s" % (value, matches, col_to_search))
@@ -296,24 +297,102 @@ class DescribeData:
 
 class Analysis:
     def question1():
-        input1 = ""
-        while input1 != 'Q':
-            input1 = input("\nWork in progress (q to quit): ").upper()
+    
+        monthDict = {
+            "January ": 0,"Feburary": 0,"March": 0,"April ": 0, "May": 0,
+            "June": 0,"July ": 0,"August": 0,"September": 0,"October ": 0,
+            "November": 0,"December": 0,
+            }
+
+        # Stores the count of delays in each month
+        delay_count = []
+        
+        # A Delay has occured when there is a 1 in the DEP_DEL15 Column
+        # creates a new dataframe comprised of only rows with a delay for a given month
+        # the number of rows of that dataframe is equal to the total delays for that month
+        for i in range (1,13):
+            delays_in_month = airline_data[(airline_data['MONTH'] == i) & (airline_data['DEP_DEL15'].isin([1]))]
+            delay_count.append(len(delays_in_month.index))
+            
+        index = 0
+        # updates the dictonary with count of delays
+        for key in monthDict:
+            monthDict[key] = delay_count[index]
+            index +=1
+            
+        # print answer
+        month_with_max_delays = max(monthDict, key = monthDict.get)
+        count_max_delays = max(monthDict.values())
+        print("\n %s had the most delays in 2019 with a total count of: %d delays" % (month_with_max_delays,count_max_delays))
             
         Analysis.analysisMenu()
         
     def question2():
-        input2 = ""
-        while input2 != 'Q':
-            input2 = input("\nWork in progress (q to quit): ").upper()
+        
+        weekDict = {
+            "Monday": 0,"Tuesday": 0,"Wednesday": 0,"Thursday": 0, "Friday": 0,
+            "Saturday": 0,"Sunday ": 0,
+            }
+        delay_count = []
+        
+        # A Delay has occured when there is a 1 in the DEP_DEL15 Column
+        # creates a new dataframe comprised of only rows with a delay for a given day
+        # the number of rows of that dataframe is equal to the total delays for that day
+        for i in range (1,8):
+            delays_in_week = airline_data[(airline_data['DAY_OF_WEEK'] == i) & (airline_data['DEP_DEL15'].isin([1]))]
+            delay_count.append(len(delays_in_week.index))
+            
+        index = 0
+        # updates the dictonary with count of delays
+        for key in weekDict:
+            weekDict[key] = delay_count[index]
+            index +=1
+            
+        # print answer
+        day_with_max_delays = max(weekDict, key = weekDict.get)
+        count_max_delays = max(weekDict.values())
+        print("\n %s had the most delays in 2019 with a total count of: %d delays" % (day_with_max_delays,count_max_delays))
             
         Analysis.analysisMenu()
         
+    # not finished 
     def question3():
-        input3 = ""
-        while input3 != 'Q':
-            input3 = input("\nWork in progress (q to quit):  ").upper()
+        
+        # must populate airline names with code, not manually 
+        airline_carrier_dict = {
+            "American Airlines Inc.": 0,"SkyWest Airlines Inc.": 0,
+            "American Eagle Airlines Inc.": 0,
+            "Southwest Airlines Co.": 0, "JetBlue Airways": 0,
+            "United Air Lines Inc.": 0,"Alaska Airlines Inc. ": 0,
+            "Atlantic Southeast Airlines": 0,"Delta Air Lines Inc. ": 0,
+            "Midwest Airline, Inc. ": 0,"Comair Inc. ": 0,
+            "Endeavor Air Inc.": 0,"Frontier Airlines Inc. ": 0,
+            "Spirit Air Lines": 0,"Mesa Airlines Inc.": 0,
+            "Allegiant Air": 0," Hawaiian Airlines Inc.": 0,
             
+          
+            }
+        delay_count = []
+        
+        # A Delay has occured when there is a 1 in the DEP_DEL15 Column
+        # creates a new dataframe comprised of only rows with a delay for a given airline
+        # the number of rows of that dataframe is equal to the total delays for that day
+        for i in airline_carrier_dict:
+            delays_in_airline = airline_data[(airline_data['CARRIER_NAME'] == i) & (airline_data['DEP_DEL15'].isin([1]))]
+            delay_count.append(len(delays_in_airline.index))
+            
+        index = 0
+        # updates the dictonary with count of delays
+        for key in airline_carrier_dict:
+            airline_carrier_dict[key] = delay_count[index]
+            index +=1
+            
+        # print answer
+        airline_with_max_delays = max(airline_carrier_dict, key = airline_carrier_dict.get)
+        count_max_delays = max(airline_carrier_dict.values())
+        print("\n %s had the most delays in 2019 with a total count of: %d delays" % (airline_with_max_delays,count_max_delays))
+        print("\n Not finished still need to account for Jan, July, and Dec")
+        
         Analysis.analysisMenu()
         
     def question4():
@@ -339,8 +418,8 @@ class Analysis:
         
     def analysisMenu():
         print("\n* Analysis *\n")
-        print("1. What was the month of the year in 2019 with most delays overall? And how many delays were recorded in that month?")
-        print("2. What was the month of the year in 2019 with most delays overall? And how many delays were recorded in that day? ")
+        print("1. What was the month of the year in 2019 with most1 delays overall? And how many delays were recorded in that month?")
+        print("2. What was the day in 2019 with most delays overall? And how many delays were recorded in that day? ")
         print("3. What airline carrier experience the most delays in January, July and December ")
         print("4. What was the average plane age of all planes with delays operated by American Airlines inc.")
         print("5. How many planes were delayed for more than 15 minutes during days with 'heavy snow' (Days when the inches of snow on ground were 15 or more) )? ")
@@ -368,7 +447,7 @@ class Analysis:
 # everyone should use this Main menu method 
 def mainMenu():
     while True:
-        try:
+       # try:
             print("Main Menu\n")
             print("1. Explore the data \n2. Describe the data \n3. Analysis")
             mode = int(input("\nSelect a mode: "))
@@ -390,8 +469,8 @@ def mainMenu():
                 print("** Invalid mode entered **")
             
       
-        except:
-            print("** Invalid input entered **\n")
+        #except:
+         #   print("** Invalid input entered **\n")
         
 # starts the program
 mainMenu()
