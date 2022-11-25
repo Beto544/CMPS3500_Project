@@ -10,39 +10,61 @@
 import pandas as pd
 import math
 import numpy as np
+import timeit
 
-# load the csv file into a data frame
-airline_data = pd.read_csv('Airline_data.csv')
+global data_file
 
+# default file loading
+data_file = pd.read_csv("Airline_data.csv")
 # removes the index column
-blankIndex = [''] * len(airline_data)
-airline_data.index = blankIndex
+blankIndex = [''] * len(data_file)
+data_file.index = blankIndex
 
+# loads user specified file into dataframe
+def  loadFile():
+    global data_file
+    file_name = str(input("Enter the file name to load: "))
+    t_0 = timeit.default_timer()
+    data_file = pd.read_csv(file_name)
+    # removes the index column
+    blankIndex = [''] * len(data_file)
+    data_file.index = blankIndex
+    t_1 = timeit.default_timer()
+    print("\nFile: '%s'" % (file_name))
+    print("Total Columns Read: %d" % (data_file.shape[1]))
+    print("Total Rows Read: %d" % (len(data_file.index)))
+    elapsed_time = (t_1 - t_0)
+    print(f"File Loaded Succesfully ! Elapsed time: {elapsed_time:.03f} secs")
+    
 # contains part 2
 class ExploreData:
 
     def listColumns():
 # Lists all columns in the dataset
-        print("\nThe columns are: \n")
-        for col in airline_data.columns:
-            print(col)
+        try:
+            print("\nThe columns are: \n")
+            for col in data_file.columns:
+                print(col)
             
-        print("-----------------------")
-        col_to_drop= ""
+            print("-----------------------")
+            col_to_drop= ""
         
-     #Prompt user to drop columns
-        while col_to_drop  != 'Q':
-                col_to_drop = input("\nEnter a Column you'd like to DROP (q to quit): ").upper()
-                if (col_to_drop == 'Q'):
-                    break
-                airline_data.drop(col_to_drop, axis =1,inplace =True)
-                # print updated columns
-                print("\n Updated Columns :\n")
-                for cols in airline_data.columns:
-                    print(cols)
+            #Prompt user to drop columns
+            while col_to_drop  != 'Q':
+                    col_to_drop = input("\nEnter a Column you'd like to DROP (q to quit): ").upper()
+                    if (col_to_drop == 'Q'):
+                        break
+                    data_file.drop(col_to_drop, axis =1,inplace =True)
+                    # print updated columns
+                    print("\n Updated Columns :\n")
+                    for cols in data_file.columns:
+                        print(cols)
                     
-        ExploreData.exploreDataMenu()
-    
+            ExploreData.exploreDataMenu()
+        except KeyError:
+            print("** Column not found, try again ** ")
+            ExploreData.listColumns()
+            
     def countDistinctValues():
     # prompt user for column to count distint values
         print("-----------------------")
@@ -52,10 +74,10 @@ class ExploreData:
                 col_to_count= input("\nFor which Column would you like to know the count of DISTINCT VALUES (q to quit): ").upper()
                 if (col_to_count == 'Q'):
                     break
-                distinct_val_count = len(pd.unique(airline_data[col_to_count]))
+                distinct_val_count = len(pd.unique(data_file[col_to_count]))
                 print("\nCount of unique values in %s: %d" % (col_to_count,distinct_val_count))
             except:
-                print("Invalid column please try again")
+                print("Column not found, try again")
         ExploreData.exploreDataMenu()
         
     def searchColumn():
@@ -67,7 +89,7 @@ class ExploreData:
                 if col_to_search == 'Q':
                     break
                 value = str((input("Enter the value to find: "))).upper()
-                values_ = airline_data[col_to_search].tolist()
+                values_ = data_file[col_to_search].tolist()
                 index = 0
                 matches = 0
                 strings = []
@@ -86,7 +108,7 @@ class ExploreData:
                 if index_list:
                     print("'%s' found %d times in %s" % (value, matches, col_to_search))
                     first_six = index_list[0:6]
-                    print("First six indexes:", first_six)
+                    print("First six rows:", first_six)
                 else:
                     print("Value not found")
             except:
@@ -109,10 +131,10 @@ class ExploreData:
                 try:
                     sorting_method = int(input("Enter 1 for Ascending order or 2 for Descending: "))
                     if sorting_method == 1:
-                        airline_data.sort_values(by = col_to_sort, inplace =True)
+                        data_file.sort_values(by = col_to_sort, inplace =True)
     
                     elif sorting_method == 2:
-                        airline_data.sort_values(by = col_to_sort,ascending = False, inplace = True)
+                        data_file.sort_values(by = col_to_sort,ascending = False, inplace = True)
                     else:
                         print("* ERROR PLEASE ENTER 1 or 2 *")
                     #continue
@@ -134,29 +156,30 @@ class ExploreData:
                 if col_to_print == 'Q':
                     break
                 num_of_rows = int(input("                                     How many rows?: "))
-                columns = airline_data.columns
+                columns = data_file.columns
                 col_index = columns.get_loc(col_to_print)
-                print(airline_data.iloc[0:num_of_rows,col_index])
+                print(data_file.iloc[0:num_of_rows,col_index])
             except:
                 print("Invalid column or num rows, try again")
         ExploreData.exploreDataMenu()
 
     # Menu for mode 1, part 2 of the project
     def exploreDataMenu():
-        print("\n* Exploring the data *\n")
+        print("\nExplore Data")
+        print("**************")
         print(" 1. List & Drop columns \n 2. Count distinct values\n 3. Search for any value in a specified column \n 4. Sort columns \n 5. Print Coumns \n 6. Return to main menu")
-        operation = int(input("\nSelect an Operation: "))
-        if operation == 1:
+        operation = str(input("\nSelect an Operation: "))
+        if operation == '1':
             ExploreData.listColumns()
-        elif operation == 2:
+        elif operation == '2':
             ExploreData.countDistinctValues()
-        elif operation == 3:
+        elif operation == '3':
             ExploreData.searchColumn()
-        elif operation == 4:
+        elif operation == '4':
             ExploreData.sortColumns()
-        elif operation == 5:
+        elif operation == '5':
             ExploreData.printColmuns()
-        elif operation == 6:
+        elif operation == '6':
             mainMenu()
         else:
             print("Invalid Operation Selected")
@@ -164,41 +187,36 @@ class ExploreData:
 # End of Part 2/ exploring the data       
  
 class DescribeData:
-    def meanColumn():
-        col_to_mean = input("\nEnter the column you'd like to be be averaged: ").upper()
+    def meanColumn(col_to_mean):
         meanSum = 0
-        values = airline_data[col_to_mean].tolist()
+        values = data_file[col_to_mean].tolist()
         for i in values:
             meanSum += i
-
-        print(meanSum/len(airline_data.axes[0]))
-    def minColumn():
-        col_to_min =  input("\nEnter the column you'd like to find the minimum of ").upper()
+        print("Mean: %.3f " % (meanSum/len(data_file.axes[0])))
+    def minColumn(col_to_min):
         lowest = None
-        values = airline_data[col_to_min].tolist()
+        values = data_file[col_to_min].tolist()
         for i in values:
             if lowest == None:
                 lowest = i
             elif lowest > i:
                 lowest = i 
-        print(lowest)
+        print("Min: %.2f" % (lowest))
         
-    def maxColumn():
-        col_to_max =  input("\nEnter the column you'd like to find the maximum of ").upper()
+    def maxColumn(col_to_max):
         highest = None
-        values = airline_data[col_to_max].tolist()
+        values = data_file[col_to_max].tolist()
         for i in values:
             if highest == None:
                 highest = i
             elif i > highest:
                 highest = i 
-        print(highest)
+        print("Max: %.2f" %(highest))
     #will optimize later by removing a number from the entire list after it has been checked
-    def modeColumn():
-        col_to_mode = input("\nEnter the column you'd like to find the mode(s) of ").upper()
+    def modeColumn(col_to_mode):
         modes = []
         mode_count = 0
-        values = airline_data[col_to_mode].tolist()
+        values = data_file[col_to_mode].tolist()
         already_checked = []
         
         for numb in values:
@@ -217,9 +235,8 @@ class DescribeData:
         else:
             print("The modes are", str(modes)[1:-1], "and they occur", mode_count, "time(s).")   
 
-    def medianColumn():
-        col_to_median = input("\nEnter the column you'd like to find the median of ").upper()
-        values = airline_data[col_to_median].tolist()
+    def medianColumn(col_to_median):
+        values = data_file[col_to_median].tolist()
         sorted_values = sorted(values)
         median = sorted_values[int(len(sorted_values)/2)]
         median_even = sorted_values[int(len(sorted_values)/2) - 1]
@@ -228,11 +245,10 @@ class DescribeData:
         else:
             print("The median is ", median)
 
-    def uniqueColumn():
-        col_to_unique = input("\nEnter the column you'd like to find the unique(s) of ").upper()
+    def uniqueColumn(col_to_unique):
         uniques = []
         unique_count = float("inf")
-        values = airline_data[col_to_unique].tolist()
+        values = data_file[col_to_unique].tolist()
         already_checked = []
         for numb in values:
                 if numb not in already_checked:
@@ -248,51 +264,72 @@ class DescribeData:
         else:
             print("The uniques are", str(uniques)[1:-1], "and they occur", unique_count, "time(s).")
 
-    def countColumn():
-        col_to_count = input("\nEnter the column you'd like to find the count of ").upper()
-        values = airline_data[col_to_count].tolist()
+    def countColumn(col_to_count):
+        values = data_file[col_to_count].tolist()
 
-        print("The count of the list is", len(values))
+        print("Count: ", len(values))
 
 
-    def percentile():
-        col_to_percentile = input("\nEnter the column you'd like to use percentile operation on ").upper()
-        values = airline_data[col_to_percentile].tolist()
-        perc = int(input("\nEnter the percentile you'd like, 20, 40, 60, etc").upper())
+    def percentile(col_to_percentile):
+        values = data_file[col_to_percentile].tolist()
         #Percentile needs a sorted list
         values.sort()
         
         size = len(values)
         #find the index of the value based on its percentile- size of list * percentage /100
-        result = values[int(math.ceil((size*perc) / 100)) -1]
-        print("\n", result)
+        result20 = values[int(math.ceil((size*20) / 100)) -1]
+        result40 = values[int(math.ceil((size*40) / 100)) -1]
+        result60 = values[int(math.ceil((size*60) / 100)) -1]
+        result80 = values[int(math.ceil((size*80) / 100)) -1]
+        
+        print("20 Percentile (P20): %.3f" % (result20))
+        print("40 Percentile (P40): %.3f" % (result40))
+        print("60 Percentile (P60): %.3f" % (result60))
+        print("80 Percentile (P80): %.3f" % (result80))
 
     # Menu for part 3
     def describeDataMenu():
-        print("\n* Describing the data *\n")
-        print(" 1. Mean \n 2. Min \n 3. Max \n 4. Mode \n 5. Median \n 6. Unique\n 7. Percentile \n 8. Count \n 9. Return to main menu")
-        operation = int(input("\nSelect an Operation: "))
-        if operation == 1:
-            DescribeData.meanColumn()
-        elif operation == 2:
-            DescribeData.minColumn()
-        elif operation == 3:
-            DescribeData.maxColumn()
-        elif operation == 4:
-            DescribeData.modeColumn()
-        elif operation == 5:
-            DescribeData.medianColumn()
-        elif operation == 6:
-            DescribeData.uniqueColumn()
-        elif operation == 7:
-            DescribeData.percentile()
-        elif operation == 8:
-            DescribeData.countColumn()
-        elif operation == 9:
+        print("\nDescribe Data")
+        print("**************")
+        try:
+            col_to_describe = str(input("\nEnter the column to describe (q to quit): ")).upper()
+            
+            if (col_to_describe == 'Q'):
+                mainMenu()
+            # calls the countColumn function
+            DescribeData.countColumn(col_to_describe)
+            
+             # calls the uniqueColumn function
+            DescribeData.uniqueColumn(col_to_describe)
+            
+             # calls the meanColumn function
+            DescribeData.meanColumn(col_to_describe)
+            
+             # calls the medianColumn function
+            DescribeData.medianColumn(col_to_describe)
+            
+             # calls the modeColumn function
+            DescribeData.modeColumn(col_to_describe)
+            
+             # calls the minColumn function
+            DescribeData.minColumn(col_to_describe)
+            
+             # calls the maxColumn function
+            DescribeData.maxColumn(col_to_describe)
+            
+             # calls the percentile function
+            DescribeData.percentile(col_to_describe)
+            
+            # returns to main menu
             mainMenu()
-        else:
-            print("Invalid Operation Selected")
-
+        except TypeError:
+            print("\n** Error - No numbers in column, could not perform all operations **")
+            DescribeData.describeDataMenu()
+        except KeyError:
+            print("\n**Error - Column not found")
+            DescribeData.describeDataMenu()
+            
+       
 # End of Part 3
 
 class Analysis:
@@ -311,7 +348,7 @@ class Analysis:
         # creates a new dataframe comprised of only rows with a delay for a given month
         # the number of rows of that dataframe is equal to the total delays for that month
         for i in range (1,13):
-            delays_in_month = airline_data[(airline_data['MONTH'] == i) & (airline_data['DEP_DEL15'].isin([1]))]
+            delays_in_month = data_file[(data_file['MONTH'] == i) & (data_file['DEP_DEL15'].isin([1]))]
             delay_count.append(len(delays_in_month.index))
             
         index = 0
@@ -323,9 +360,7 @@ class Analysis:
         # print answer
         month_with_max_delays = max(monthDict, key = monthDict.get)
         count_max_delays = max(monthDict.values())
-        print("\n %s had the most delays in 2019 with a total count of: %d delays" % (month_with_max_delays,count_max_delays))
-            
-        Analysis.analysisMenu()
+        print("\n %s had the most delays in 2019 with a total count of: %d delays\n" % (month_with_max_delays,count_max_delays))
         
     def question2():
         
@@ -339,7 +374,7 @@ class Analysis:
         # creates a new dataframe comprised of only rows with a delay for a given day
         # the number of rows of that dataframe is equal to the total delays for that day
         for i in range (1,8):
-            delays_in_week = airline_data[(airline_data['DAY_OF_WEEK'] == i) & (airline_data['DEP_DEL15'].isin([1]))]
+            delays_in_week = data_file[(data_file['DAY_OF_WEEK'] == i) & (data_file['DEP_DEL15'].isin([1]))]
             delay_count.append(len(delays_in_week.index))
             
         index = 0
@@ -351,126 +386,185 @@ class Analysis:
         # print answer
         day_with_max_delays = max(weekDict, key = weekDict.get)
         count_max_delays = max(weekDict.values())
-        print("\n %s had the most delays in 2019 with a total count of: %d delays" % (day_with_max_delays,count_max_delays))
-            
-        Analysis.analysisMenu()
+        print("\n %s had the most delays in 2019 with a total count of: %d delays\n" % (day_with_max_delays,count_max_delays))
         
     # not finished 
     def question3():
         
         # must populate airline names with code, not manually 
         airline_carrier_dict = {
-            "American Airlines Inc.": 0,"SkyWest Airlines Inc.": 0,
-            "American Eagle Airlines Inc.": 0,
-            "Southwest Airlines Co.": 0, "JetBlue Airways": 0,
-            "United Air Lines Inc.": 0,"Alaska Airlines Inc. ": 0,
-            "Atlantic Southeast Airlines": 0,"Delta Air Lines Inc. ": 0,
-            "Midwest Airline, Inc. ": 0,"Comair Inc. ": 0,
-            "Endeavor Air Inc.": 0,"Frontier Airlines Inc. ": 0,
-            "Spirit Air Lines": 0,"Mesa Airlines Inc.": 0,
-            "Allegiant Air": 0," Hawaiian Airlines Inc.": 0,
+            "American Airlines Inc.": [],
+            "SkyWest Airlines Inc.": [],
+            "American Eagle Airlines Inc.": [],
+            "Southwest Airlines Co.": [], "JetBlue Airways": [],
+            "United Air Lines Inc.": [],"Alaska Airlines Inc. ": [],
+            "Atlantic Southeast Airlines": [],"Delta Air Lines Inc. ": [],
+            "Midwest Airline, Inc. ": [],"Comair Inc. ": [],
+            "Endeavor Air Inc.": [],"Frontier Airlines Inc. ": [],
+            "Spirit Air Lines": [],"Mesa Airlines Inc.": [],
+            "Allegiant Air": []," Hawaiian Airlines Inc.": [],
             
-          
             }
-        delay_count = []
+        monthDict = {
+            "January ": 0,"Feburary": 0,"March": 0,"April ": 0, "May": 0,
+            "June": 0,"July ": 0,"August": 0,"September": 0,"October ": 0,
+            "November": 0,"December": 0,
+            }
         
+        #print(airline_carrier_dict)
+        delay_count = []
+        months_to_check = (1,7,12)
+        
+    
         # A Delay has occured when there is a 1 in the DEP_DEL15 Column
         # creates a new dataframe comprised of only rows with a delay for a given airline
         # the number of rows of that dataframe is equal to the total delays for that day
         for i in airline_carrier_dict:
-            delays_in_airline = airline_data[(airline_data['CARRIER_NAME'] == i) & (airline_data['DEP_DEL15'].isin([1]))]
-            delay_count.append(len(delays_in_airline.index))
+            for j in months_to_check:
+                delays_in_airline = data_file[(data_file['CARRIER_NAME'] == i) & (data_file['DEP_DEL15']== 1) & (data_file['MONTH'] == j)]
+                delay_count.append(len(delays_in_airline.index))
+                
             
+        
         index = 0
         # updates the dictonary with count of delays
         for key in airline_carrier_dict:
-            airline_carrier_dict[key] = delay_count[index]
-            index +=1
+                airline_carrier_dict[key].append(delay_count[index])
+                index +=1
+                airline_carrier_dict[key].append(delay_count[index])
+                index +=1
+                airline_carrier_dict[key].append(delay_count[index])
+                index +=1
+        
+        # get the num of delays
+        #airline_delays = airline_carrier_dict.values()
+        #print(type(airline_delays))
+        #for airline in airline_delays:
+        jan_max_delays = 0
+        july_max_delays = 0
+        dec_max_delays = 0
+        
+        # iterates through the number of delays in airline_carrier_dict, finds the max for each month
+        for every_list in airline_carrier_dict.values():
+            for each_element in every_list:
+                each_element = every_list[0]
+                element2 = every_list[1]
+                element3 = every_list[2]
+                jan_max_delays = each_element if each_element > jan_max_delays else jan_max_delays
+                july_max_delays = element2 if element2> july_max_delays else july_max_delays
+                dec_max_delays = element3 if element3 > dec_max_delays else dec_max_delays
+                
+        
+    
             
         # print answer
-        airline_with_max_delays = max(airline_carrier_dict, key = airline_carrier_dict.get)
+        #airline_with_max_delays = max(airline_carrier_dict, key = airline_carrier_dict.get)
         count_max_delays = max(airline_carrier_dict.values())
-        print("\n %s had the most delays in 2019 with a total count of: %d delays" % (airline_with_max_delays,count_max_delays))
-        print("\n Not finished still need to account for Jan, July, and Dec")
         
-        Analysis.analysisMenu()
+        #print(delay_count)
+        #print(len(delay_count))
         
+        #keys = [k for k, v in airline_carrier_dict.items() if v == jan_max_delays]
+        #print(keys)
+        
+        airline_with_max_delays = (list(airline_carrier_dict.keys())[list(airline_carrier_dict.values()).index(count_max_delays)])
+        
+        # print answer
+        print("\n %s had the most delays in January with a total count of: %d" % (airline_with_max_delays,jan_max_delays))
+        print("\n %s had the most delays in July with a total count of: %d" % (airline_with_max_delays,july_max_delays))
+        print("\n %s had the most delays in December with a total count of: %d\n" % (airline_with_max_delays,dec_max_delays))
+
     def question4():
-        input4 = ""
-        while input4!= 'Q':
-            input4 = input("\nWork in progress (q to quit): ").upper()
+         print("\nWork in progress\n")
             
-        Analysis.analysisMenu()
+       
         
     def question5():
-        input5 = ""
-        while input5 != 'Q':
-            input5 = input("\nWork in progress (q to quit): ").upper()
-            
-        Analysis.analysisMenu()
+         print("\nWork in progress\n")
+       
         
     def question6():
-        input6 = ""
-        while input6 != 'Q':
-            input6 = input("\nWork in progress (q to quit): ").upper()
+       print("\nWork in progress\n")
+       
+    def question7():
+       print("\nWork in progress\n")
+       
+    def question8():
+       print("\nWork in progress\n")
+    
+    def question9():
+       print("\nWork in progress\n") 
+    
+    def question10():
+       print("\nWork in progress\n")
             
-        Analysis.analysisMenu()
+    def question11():
+       print("\nWork in progress\n")
+       
         
     def analysisMenu():
-        print("\n* Analysis *\n")
+        print("\nAnalysis")
+        print("*********")
         print("1. What was the month of the year in 2019 with most1 delays overall? And how many delays were recorded in that month?")
+        Analysis.question1()
         print("2. What was the day in 2019 with most delays overall? And how many delays were recorded in that day? ")
+        Analysis.question2()
         print("3. What airline carrier experience the most delays in January, July and December ")
+        Analysis.question3()
         print("4. What was the average plane age of all planes with delays operated by American Airlines inc.")
+        Analysis.question4()
         print("5. How many planes were delayed for more than 15 minutes during days with 'heavy snow' (Days when the inches of snow on ground were 15 or more) )? ")
+        Analysis.question5()
         print("6. What are the 5 Airports that had the most delays in 2019?")
-        print("7. Return to main menu")
+        Analysis.question6()
+        print("7. How many airlines are included in the data set? Print the first 5 in alphabetical order.")
+        Analysis.question7()
+        print("8. How many departing airports are included in the data set? Print the last 5 in alphabetical order.")
+        Analysis.question8()
+        print("9. What airline has the oldest plane?")
+        Analysis.question9()
+        print("10. What was the greatest delay ever recorded? print the airline and airpots of this event.")
+        Analysis.question10()
+        print("11. What was the smallest delay ever recorded? print the airline and airports of this event.")
+        Analysis.question11()
+        mainMenu()
         
-        operation = int(input("\nSelect a Question: "))
-        if operation == 1:
-            Analysis.question1()
-        elif operation == 2:
-            Analysis.question2()
-        elif operation == 3:
-            Analysis.question3()
-        elif operation == 4:
-            Analysis.question4()
-        elif operation == 5:
-            Analysis.question5()
-        elif operation == 6:
-            Analysis.question6()
-        elif operation == 7:
-            mainMenu()
-        else:
-            print("Invalid Question Selected")
-
 # everyone should use this Main menu method 
 def mainMenu():
     while True:
-       # try:
-            print("Main Menu\n")
-            print("1. Explore the data \n2. Describe the data \n3. Analysis")
-            mode = int(input("\nSelect a mode: "))
+       try:
+           
+            print("\nMain Menu")
+            print("***********")
+            print("1. Load Data\n2. Explore the data \n3. Describe the data")
+            print("4. Analysis \n5. Quit")
+            mode = str(input("\nSelect a mode: "))
         
             # Begins Part 2 - Exploring the data 
-            if mode == 1:
+            if mode == '1':
+                loadFile()
+                
+            elif mode == '2':
                 ExploreData.exploreDataMenu()
-        
+    
             #Begins part 3 - Desribing the data
-            elif mode == 2:
-                junk = 0    # <= useless code 
-                # example 
+            elif mode == '3':
                 DescribeData.describeDataMenu()
         
             # Begins part 4 - Analysis
-            elif mode == 3:
+            elif mode == '4':
                 Analysis.analysisMenu()
+            elif mode == '5':
+                break
             else:
-                print("** Invalid mode entered **")
+                print("** Invalid mode selected **")
             
       
-        #except:
-         #   print("** Invalid input entered **\n")
+       except FileNotFoundError:
+           print("** File not Found try again **\n")
+           loadFile()
+       except NameError as ne:
+           print(ne)
         
 # starts the program
 mainMenu()
