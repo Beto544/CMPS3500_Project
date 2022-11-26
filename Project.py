@@ -334,6 +334,7 @@ class DescribeData:
 
 class Analysis:
     def question1():
+        print("1. What was the month of the year in 2019 with most1 delays overall? And how many delays were recorded in that month?")
     
         monthDict = {
             "January ": 0,"Feburary": 0,"March": 0,"April ": 0, "May": 0,
@@ -363,6 +364,7 @@ class Analysis:
         print("\n %s had the most delays in 2019 with a total count of: %d delays\n" % (month_with_max_delays,count_max_delays))
         
     def question2():
+        print("2. What was the day in 2019 with most delays overall? And how many delays were recorded in that day? ")
         
         weekDict = {
             "Monday": 0,"Tuesday": 0,"Wednesday": 0,"Thursday": 0, "Friday": 0,
@@ -390,6 +392,7 @@ class Analysis:
         
     # not finished 
     def question3():
+        print("3. What airline carrier experience the most delays in January, July and December ")
         
         # must populate airline names with code, not manually 
         airline_carrier_dict = {
@@ -405,17 +408,11 @@ class Analysis:
             "Allegiant Air": []," Hawaiian Airlines Inc.": [],
             
             }
-        monthDict = {
-            "January ": 0,"Feburary": 0,"March": 0,"April ": 0, "May": 0,
-            "June": 0,"July ": 0,"August": 0,"September": 0,"October ": 0,
-            "November": 0,"December": 0,
-            }
         
         #print(airline_carrier_dict)
         delay_count = []
         months_to_check = (1,7,12)
         
-    
         # A Delay has occured when there is a 1 in the DEP_DEL15 Column
         # creates a new dataframe comprised of only rows with a delay for a given airline
         # the number of rows of that dataframe is equal to the total delays for that day
@@ -424,8 +421,6 @@ class Analysis:
                 delays_in_airline = data_file[(data_file['CARRIER_NAME'] == i) & (data_file['DEP_DEL15']== 1) & (data_file['MONTH'] == j)]
                 delay_count.append(len(delays_in_airline.index))
                 
-            
-        
         index = 0
         # updates the dictonary with count of delays
         for key in airline_carrier_dict:
@@ -436,10 +431,6 @@ class Analysis:
                 airline_carrier_dict[key].append(delay_count[index])
                 index +=1
         
-        # get the num of delays
-        #airline_delays = airline_carrier_dict.values()
-        #print(type(airline_delays))
-        #for airline in airline_delays:
         jan_max_delays = 0
         july_max_delays = 0
         dec_max_delays = 0
@@ -454,10 +445,7 @@ class Analysis:
                 july_max_delays = element2 if element2> july_max_delays else july_max_delays
                 dec_max_delays = element3 if element3 > dec_max_delays else dec_max_delays
                 
-        
-    
             
-        # print answer
         #airline_with_max_delays = max(airline_carrier_dict, key = airline_carrier_dict.get)
         count_max_delays = max(airline_carrier_dict.values())
         
@@ -475,58 +463,77 @@ class Analysis:
         print("\n %s had the most delays in December with a total count of: %d\n" % (airline_with_max_delays,dec_max_delays))
 
     def question4():
-         print("\nWork in progress\n")
-            
-       
+        print("4. What was the average plane age of all planes with delays operated by American Airlines inc.")
+        
+        # pulls columns with matching data and creates new dataframe with that data       
+        american_airline_delays = data_file[(data_file['CARRIER_NAME'] == 'American Airlines Inc.') & (data_file['DEP_DEL15']== 1)]
+        # puts plane ages into a list
+        plane_ages = american_airline_delays['PLANE_AGE'].tolist()
+        # gets number of planes
+        total_planes = len(plane_ages)
+        # adds up plane ages
+        sum_age = sum(plane_ages)
+        # calculate average
+        average_age = sum_age/total_planes
+        # print answer
+        print("\nThe average plane age of all planes with delays operated American Airlines is: %.3f\n" % (average_age))
         
     def question5():
-         print("\nWork in progress\n")
-       
+        print("5. How many planes were delayed for more than 15 minutes during days with 'heavy snow' (Days when the inches of snow on ground were 15 or more) )? ")
+        
+        # pulls columns with matching data and creates a new dataframe with that data  
+        planes_delayed = data_file[(data_file['SNOW'] >= 15) & (data_file['DEP_DEL15']== 1)]
+        
+        # total count of delayed planes 
+        num_of_planes = len(planes_delayed.index)
+        
+        # print answer
+        print("\n%d planes were delayed for more than 15mins due to heavy snow\n" % (num_of_planes))
         
     def question6():
-       print("\nWork in progress\n")
+       print("6. What are the 5 Airports that had the most delays in 2019?")
        
     def question7():
-       print("\nWork in progress\n")
+        print("7. How many airlines are included in the data set? Print the first 5 in alphabetical order.")
        
     def question8():
-       print("\nWork in progress\n")
+        print("8. How many departing airports are included in the data set? Print the last 5 in alphabetical order.")
     
     def question9():
-       print("\nWork in progress\n") 
+       print("9. What airline has the oldest plane?")
     
     def question10():
-       print("\nWork in progress\n")
+        print("10. What was the greatest delay ever recorded? print the airline and airpots of this event.")
             
     def question11():
-       print("\nWork in progress\n")
+       print("11. What was the smallest delay ever recorded? print the airline and airports of this event.")
        
         
     def analysisMenu():
         print("\nAnalysis")
         print("*********")
-        print("1. What was the month of the year in 2019 with most1 delays overall? And how many delays were recorded in that month?")
         Analysis.question1()
-        print("2. What was the day in 2019 with most delays overall? And how many delays were recorded in that day? ")
+        
         Analysis.question2()
-        print("3. What airline carrier experience the most delays in January, July and December ")
+        
         Analysis.question3()
-        print("4. What was the average plane age of all planes with delays operated by American Airlines inc.")
+       
         Analysis.question4()
-        print("5. How many planes were delayed for more than 15 minutes during days with 'heavy snow' (Days when the inches of snow on ground were 15 or more) )? ")
+       
         Analysis.question5()
-        print("6. What are the 5 Airports that had the most delays in 2019?")
+        
         Analysis.question6()
-        print("7. How many airlines are included in the data set? Print the first 5 in alphabetical order.")
+       
         Analysis.question7()
-        print("8. How many departing airports are included in the data set? Print the last 5 in alphabetical order.")
+       
         Analysis.question8()
-        print("9. What airline has the oldest plane?")
+        
         Analysis.question9()
-        print("10. What was the greatest delay ever recorded? print the airline and airpots of this event.")
+       
         Analysis.question10()
-        print("11. What was the smallest delay ever recorded? print the airline and airports of this event.")
+        
         Analysis.question11()
+        
         mainMenu()
         
 # everyone should use this Main menu method 
