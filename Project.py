@@ -34,24 +34,33 @@ def  loadFile():
     print("Total Columns Read: %d" % (data_file.shape[1]))
     print("Total Rows Read: %d" % (len(data_file.index)))
     elapsed_time = (t_1 - t_0)
-    print(f"File Loaded Succesfully ! Elapsed time: {elapsed_time:.03f} secs")
+    print(f"File Loaded Succesfully ! Elapsed time: {elapsed_time:.04f} secs")
+    
+   
     
 # contains part 2
 class ExploreData:
 
     def listColumns():
 # Lists all columns in the dataset
+        t_0 = timeit.default_timer()
+    
         try:
             print("\nThe columns are: \n")
             for col in data_file.columns:
                 print(col)
             
             print("-----------------------")
+            t_1 = timeit.default_timer()
+            elapsed_time = (t_1 - t_0)
+            print("Printing successful time to print: %.4f secs" % elapsed_time)
+            
+            
             col_to_drop= ""
-        
             #Prompt user to drop columns
             while col_to_drop  != 'Q':
                     col_to_drop = input("\nEnter a Column you'd like to DROP (q to quit): ").upper()
+                    t_0 = timeit.default_timer()
                     if (col_to_drop == 'Q'):
                         break
                     data_file.drop(col_to_drop, axis =1,inplace =True)
@@ -59,8 +68,12 @@ class ExploreData:
                     print("\n Updated Columns :\n")
                     for cols in data_file.columns:
                         print(cols)
-                    
+                    t_1 = timeit.default_timer()
+                    elapsed_time = (t_1 - t_0)
+                    print("\nDrop successful time to drop: %.4f secs" % elapsed_time)
+            
             ExploreData.exploreDataMenu()
+            
         except KeyError:
             print("** Column not found, try again ** ")
             ExploreData.listColumns()
@@ -72,10 +85,16 @@ class ExploreData:
         while col_to_count != 'Q':
             try:
                 col_to_count= input("\nFor which Column would you like to know the count of DISTINCT VALUES (q to quit): ").upper()
+                t_0 = timeit.default_timer()
                 if (col_to_count == 'Q'):
                     break
                 distinct_val_count = len(pd.unique(data_file[col_to_count]))
                 print("\nCount of unique values in %s: %d" % (col_to_count,distinct_val_count))
+                
+                 # measure running time
+                t_1 = timeit.default_timer()
+                elapsed_time = (t_1 - t_0)
+                print("\nCount successful time to count: %.4f secs" % elapsed_time)
             except:
                 print("Column not found, try again")
         ExploreData.exploreDataMenu()
@@ -89,6 +108,7 @@ class ExploreData:
                 if col_to_search == 'Q':
                     break
                 value = str((input("Enter the value to find: "))).upper()
+                t_0 = timeit.default_timer()
                 values_ = data_file[col_to_search].tolist()
                 index = 0
                 matches = 0
@@ -109,6 +129,11 @@ class ExploreData:
                     print("'%s' found %d times in %s" % (value, matches, col_to_search))
                     first_six = index_list[0:6]
                     print("First six rows:", first_six)
+                     # measure running time
+                    t_1 = timeit.default_timer()
+                    elapsed_time = (t_1 - t_0)
+                    print("\nSearch successful time to search: %.4f secs" % elapsed_time)
+                
                 else:
                     print("Value not found")
             except:
@@ -130,11 +155,18 @@ class ExploreData:
                     break
                 try:
                     sorting_method = int(input("Enter 1 for Ascending order or 2 for Descending: "))
+                    t_0 = timeit.default_timer()
                     if sorting_method == 1:
                         data_file.sort_values(by = col_to_sort, inplace =True)
+                        t_1 = timeit.default_timer()
+                        elapsed_time = (t_1 - t_0)
+                        print("\nSort successful time to sort: %.4f secs" % elapsed_time)
     
                     elif sorting_method == 2:
                         data_file.sort_values(by = col_to_sort,ascending = False, inplace = True)
+                        t_1 = timeit.default_timer()
+                        elapsed_time = (t_1 - t_0)
+                        print("\nSort successful time to sort: %.4f secs" % elapsed_time)
                     else:
                         print("* ERROR PLEASE ENTER 1 or 2 *")
                     #continue
@@ -156,9 +188,15 @@ class ExploreData:
                 if col_to_print == 'Q':
                     break
                 num_of_rows = int(input("                                     How many rows?: "))
+                t_0 = timeit.default_timer()
                 columns = data_file.columns
                 col_index = columns.get_loc(col_to_print)
                 print(data_file.iloc[0:num_of_rows,col_index])
+                
+                # measure run time
+                t_1 = timeit.default_timer()
+                elapsed_time = (t_1 - t_0)
+                print("\nPrint successful time to print: %.4f secs" % elapsed_time)
             except:
                 print("Invalid column or num rows, try again")
         ExploreData.exploreDataMenu()
@@ -297,6 +335,7 @@ class DescribeData:
             if (col_to_describe == 'Q'):
                 mainMenu()
             # calls the countColumn function
+            t_0 = timeit.default_timer()
             DescribeData.countColumn(col_to_describe)
             
              # calls the uniqueColumn function
@@ -319,6 +358,11 @@ class DescribeData:
             
              # calls the percentile function
             DescribeData.percentile(col_to_describe)
+            
+             # measure running time
+            t_1 = timeit.default_timer()
+            elapsed_time = (t_1 - t_0)
+            print("\nStats printed successfully time to print: %.4f secs" % elapsed_time)
             
             # returns to main menu
             mainMenu()
@@ -512,6 +556,7 @@ class Analysis:
     def analysisMenu():
         print("\nAnalysis")
         print("*********")
+        t_0 = timeit.default_timer()
         Analysis.question1()
         
         Analysis.question2()
@@ -534,6 +579,9 @@ class Analysis:
         
         Analysis.question11()
         
+        t_1 = timeit.default_timer()
+        elapsed_time = (t_1 - t_0)
+        print("\nQuestions answered successfully time to answer: %.4f secs" % elapsed_time)
         mainMenu()
         
 # everyone should use this Main menu method 
