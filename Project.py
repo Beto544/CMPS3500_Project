@@ -11,7 +11,6 @@ import pandas as pd
 import math
 import numpy as np
 import timeit
-
 global data_file
 
 # default file loading
@@ -187,18 +186,47 @@ class ExploreData:
                 col_to_print = input("Enter a Column you'd like to be PRINTED (q to quit): ").upper()
                 if col_to_print == 'Q':
                     break
-                num_of_rows = int(input("                                     How many rows?: "))
+                num_of_rows = int(input("                                     How many rows 100,500, or 5000?: "))
                 t_0 = timeit.default_timer()
-                columns = data_file.columns
-                col_index = columns.get_loc(col_to_print)
-                print(data_file.iloc[0:num_of_rows,col_index])
+                #columns = data_file.columns
+                #col_index = columns.get_loc(col_to_print)
+                #print(data_file.iloc[0:num_of_rows,col_index])
+                test_list = [1,2,3,4]
+                rows = data_file[col_to_print].tolist()
+                
+                if num_of_rows <= len(rows):
+                    if num_of_rows == 100:
+                        rows_2 = rows[:num_of_rows]
+                    elif num_of_rows == 500:
+                        rows_2 = rows[:num_of_rows]
+                    elif num_of_rows == 5000:
+                        rows_2 = rows[:num_of_rows]
+                    else:
+                        print("** Error - enter 100, 500, or 5000")
+                        ExploreData.printColmuns()
+                else:
+                    print("Not enough rows in Column")
+                    ExploreData.printColmuns()
+                    
+                    
+                #columns = 4
+                print(col_to_print)
+                print("***************")
+                #for first, second, third, fourth in zip(rows_2[::columns], rows_2[1::columns], rows_2[2::columns],rows_2[3::columns]):
+                #    print(f'{first: <9,}{second: <9,}{third: <9,} {fourth}')
+                #print(rows[:num_of_rows])
+                
+                # print rows
+                for i in rows[:num_of_rows]:
+                    print(i)
                 
                 # measure run time
                 t_1 = timeit.default_timer()
                 elapsed_time = (t_1 - t_0)
                 print("\nPrint successful time to print: %.4f secs" % elapsed_time)
-            except:
-                print("Invalid column or num rows, try again")
+            except KeyError:
+                print("Column not found, try again")
+                ExploreData.printColmuns()
         ExploreData.exploreDataMenu()
 
     # Menu for mode 1, part 2 of the project
@@ -381,7 +409,7 @@ class Analysis:
         print("1. What was the month of the year in 2019 with most1 delays overall? And how many delays were recorded in that month?")
     
         monthDict = {
-            "January ": 0,"Feburary": 0,"March": 0,"April ": 0, "May": 0,
+            "January ": 0,"February": 0,"March": 0,"April ": 0, "May": 0,
             "June": 0,"July ": 0,"August": 0,"September": 0,"October ": 0,
             "November": 0,"December": 0,
             }
@@ -437,23 +465,18 @@ class Analysis:
     # not finished 
     def question3():
         print("3. What airline carrier experience the most delays in January, July and December ")
-        
-        # must populate airline names with code, not manually 
-        airline_carrier_dict = {
-            "American Airlines Inc.": [],
-            "SkyWest Airlines Inc.": [],
-            "American Eagle Airlines Inc.": [],
-            "Southwest Airlines Co.": [], "JetBlue Airways": [],
-            "United Air Lines Inc.": [],"Alaska Airlines Inc. ": [],
-            "Atlantic Southeast Airlines": [],"Delta Air Lines Inc. ": [],
-            "Midwest Airline, Inc. ": [],"Comair Inc. ": [],
-            "Endeavor Air Inc.": [],"Frontier Airlines Inc. ": [],
-            "Spirit Air Lines": [],"Mesa Airlines Inc.": [],
-            "Allegiant Air": []," Hawaiian Airlines Inc.": [],
             
-            }
+        unique_airlines = []
+        air_lines = data_file['CARRIER_NAME'].tolist()
         
-        #print(airline_carrier_dict)
+        #creats a list of all airlines
+        for airline in air_lines:
+           if airline not in unique_airlines:
+               unique_airlines.append(airline)
+               
+       # creates a airline carrier dictionary      
+        airline_carrier_dict = {i:[] for i in unique_airlines}
+    
         delay_count = []
         months_to_check = (1,7,12)
         
@@ -474,7 +497,8 @@ class Analysis:
                 index +=1
                 airline_carrier_dict[key].append(delay_count[index])
                 index +=1
-        
+                
+        # stores delays for each month
         jan_max_delays = 0
         july_max_delays = 0
         dec_max_delays = 0
@@ -489,22 +513,15 @@ class Analysis:
                 july_max_delays = element2 if element2> july_max_delays else july_max_delays
                 dec_max_delays = element3 if element3 > dec_max_delays else dec_max_delays
                 
-            
-        #airline_with_max_delays = max(airline_carrier_dict, key = airline_carrier_dict.get)
+        
+        airline_with_max_delays = max(airline_carrier_dict, key = airline_carrier_dict.get)
         count_max_delays = max(airline_carrier_dict.values())
-        
-        #print(delay_count)
-        #print(len(delay_count))
-        
-        #keys = [k for k, v in airline_carrier_dict.items() if v == jan_max_delays]
-        #print(keys)
-        
         airline_with_max_delays = (list(airline_carrier_dict.keys())[list(airline_carrier_dict.values()).index(count_max_delays)])
         
         # print answer
-        print("\n %s had the most delays in January with a total count of: %d" % (airline_with_max_delays,jan_max_delays))
-        print("\n %s had the most delays in July with a total count of: %d" % (airline_with_max_delays,july_max_delays))
-        print("\n %s had the most delays in December with a total count of: %d\n" % (airline_with_max_delays,dec_max_delays))
+        print("%s had the most delays in January with a total count of: %d" % (airline_with_max_delays,jan_max_delays))
+        print("%s had the most delays in July with a total count of: %d" % (airline_with_max_delays,july_max_delays))
+        print("%s had the most delays in December with a total count of: %d\n" % (airline_with_max_delays,dec_max_delays))
 
     def question4():
         print("4. What was the average plane age of all planes with delays operated by American Airlines inc.")
@@ -528,6 +545,7 @@ class Analysis:
         # pulls columns with matching data and creates a new dataframe with that data  
         planes_delayed = data_file[(data_file['SNOW'] >= 15) & (data_file['DEP_DEL15']== 1)]
         
+        
         # total count of delayed planes 
         num_of_planes = len(planes_delayed.index)
         
@@ -536,6 +554,41 @@ class Analysis:
         
     def question6():
        print("6. What are the 5 Airports that had the most delays in 2019?")
+       
+       unique_airports = []
+       delay_count = []
+       air_ports = data_file['DEPARTING_AIRPORT'].tolist()
+       
+       # creats a list of all the airports
+       for airport in air_ports:
+           if airport not in unique_airports:
+               unique_airports.append(airport)
+               
+       # creates a airport dictionary      
+       airport_dct = dict(zip(unique_airports, [None]*len(unique_airports)))
+      
+       # counts delays for every airport
+       for every in unique_airports:
+           delays = data_file[(data_file['DEP_DEL15']== 1) & (data_file['DEPARTING_AIRPORT'] == every)]
+           delay_count.append(len(delays.index))
+        
+       index = 0
+       
+      # updates dictioary with delays
+       for key in airport_dct:
+                airport_dct[key] = delay_count[index]
+                index +=1
+        
+       # gets the top 5 airports with the most delays
+       # only accounts for departing airports, not previous airports
+       top_five_airports = sorted(airport_dct, key=airport_dct.get, reverse=True)[:5]
+       
+       print("\nThe five airports with the most delays in 2019 are:")
+       print("***************************************************")
+       for every_port in top_five_airports:
+           print("%s with %d delays " % (every_port,airport_dct.get(every_port)))
+                   
+       print("\n")
        
     def question7():
         print("7. How many airlines are included in the data set? Print the first 5 in alphabetical order.")
