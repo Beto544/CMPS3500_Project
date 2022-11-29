@@ -337,6 +337,43 @@ class DescribeData:
         print("Count:", len(values))
 
 
+    def standardDeviation(col_to_deviation):
+        meanSum = 0
+        values = data_file[col_to_deviation].tolist()
+        temp_numb = 0
+
+        for i in values:
+            meanSum += i
+
+        mean = meanSum/len(data_file.axes[0])
+
+        for numb in values:
+            temp_numb += (numb - mean)**2
+        temp_numb_two = (temp_numb / (len(values) - 1))
+
+        final_numb = math.sqrt(temp_numb_two)
+
+        print("Standard Deviation:", final_numb)
+
+    def variance(col_to_variance):
+        values = data_file[col_to_variance].tolist()
+        meanSum = 0
+        temp_numb = 0
+
+        for i in values:
+            meanSum += i
+        
+        mean = meanSum/len(data_file.axes[0])
+
+        for numb in values:
+            temp_numb += (numb - mean)**2
+            final_numb = (temp_numb / (len(values) - 1))
+
+        print("Variance:", final_numb)
+
+
+
+
     def percentile(col_to_percentile):
         values = data_file[col_to_percentile].tolist()
         #Percentile needs a sorted list
@@ -384,9 +421,14 @@ class DescribeData:
             
              # calls the maxColumn function
             DescribeData.maxColumn(col_to_describe)
+
+            DescribeData.standardDeviation(col_to_describe)
+
+            DescribeData.variance(col_to_describe)
             
              # calls the percentile function
             DescribeData.percentile(col_to_describe)
+
             
              # measure running time
             t_1 = timeit.default_timer()
