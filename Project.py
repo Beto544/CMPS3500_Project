@@ -1,12 +1,16 @@
-#*****************************************************************/
-# NAME: Hunberto Pascual
+# *****************************************************************/
+# Course: CMPS 3500
 # ASGT: Class Project
 # ORGN: CSUB - CMPS 3500
-# FILE: c_project.py
-# DATE: 11/08/22
-#*****************************************************************/
+# FILE: ClassProjectGroup7.py
+# DATE: 11/27/22
+# Student 1: Hunberto Pascual
+# Student 2: Kenneth Wood
+# Student 3: Nathan Wardinsky
+# Description: Implementation Basic Data Analysys Routines
+# *****************************************************************/
 
-# import the pandas library
+# import libraries
 import pandas as pd
 import math
 import numpy as np
@@ -22,7 +26,9 @@ data_file.index = blankIndex
 # loads user specified file into dataframe
 def  loadFile():
     global data_file
-    file_name = str(input("Enter the file name to load: "))
+    file_name = str(input("Enter the file name to load (q to quit): "))
+    if file_name == 'q' or file_name == 'Q':
+        mainMenu()
     t_0 = timeit.default_timer()
     data_file = pd.read_csv(file_name)
     # removes the index column
@@ -136,7 +142,7 @@ class ExploreData:
                 else:
                     print("Value not found")
             except:
-                print("Searching error")
+                print("Searching error - Column and/or Value not found")
         ExploreData.exploreDataMenu()
         
     # prompt user for which column to sort (Ascending or descending)
@@ -144,7 +150,7 @@ class ExploreData:
         print("-----------------------")
         col_to_sort = ""
         sorting_method = 1
-    #                                      ****** SORTING MULTIPLE COLMUNS SEEMS TO RESORT PREVIOUSOLY SORTED COLUMNS ********** 
+                                      
         while col_to_sort != 'Q':
             try:
                 if col_to_sort == 'Q' :
@@ -153,25 +159,26 @@ class ExploreData:
                 if col_to_sort == 'Q':
                     break
                 try:
-                    sorting_method = int(input("Enter 1 for Ascending order or 2 for Descending: "))
+                    sorting_method = str(input("Enter 1 for Ascending order or 2 for Descending: "))
                     t_0 = timeit.default_timer()
-                    if sorting_method == 1:
+                    
+                    # ascending sort
+                    if sorting_method == '1':
                         data_file.sort_values(by = col_to_sort, inplace =True)
                         t_1 = timeit.default_timer()
                         elapsed_time = (t_1 - t_0)
                         print("\nSort successful time to sort: %.4f secs" % elapsed_time)
-    
-                    elif sorting_method == 2:
+                    # decending sort
+                    elif sorting_method == '2':
                         data_file.sort_values(by = col_to_sort,ascending = False, inplace = True)
                         t_1 = timeit.default_timer()
                         elapsed_time = (t_1 - t_0)
                         print("\nSort successful time to sort: %.4f secs" % elapsed_time)
                     else:
                         print("* ERROR PLEASE ENTER 1 or 2 *")
-                    #continue
-                # ^ SHOULD JUMP BACK TO LINE 69    
+                   
                 except:
-                    print("Invalid Column entered")
+                    print("Column not found!")
             except:
                 print("Invalid input please try again") 
         ExploreData.exploreDataMenu()
@@ -188,10 +195,7 @@ class ExploreData:
                     break
                 num_of_rows = int(input("                                     How many rows 100,500, or 5000?: "))
                 t_0 = timeit.default_timer()
-                #columns = data_file.columns
-                #col_index = columns.get_loc(col_to_print)
-                #print(data_file.iloc[0:num_of_rows,col_index])
-                test_list = [1,2,3,4]
+    
                 rows = data_file[col_to_print].tolist()
                 
                 if num_of_rows <= len(rows):
@@ -209,12 +213,9 @@ class ExploreData:
                     ExploreData.printColmuns()
                     
                     
-                #columns = 4
+               
                 print(col_to_print)
                 print("***************")
-                #for first, second, third, fourth in zip(rows_2[::columns], rows_2[1::columns], rows_2[2::columns],rows_2[3::columns]):
-                #    print(f'{first: <9,}{second: <9,}{third: <9,} {fourth}')
-                #print(rows[:num_of_rows])
                 
                 # print rows
                 for i in rows[:num_of_rows]:
@@ -267,7 +268,7 @@ class DescribeData:
                 lowest = i
             elif lowest > i:
                 lowest = i 
-        print("Min: %.2f" % (lowest))
+        print("Mininum: %.2f" % (lowest))
         
     def maxColumn(col_to_max):
         highest = None
@@ -277,7 +278,7 @@ class DescribeData:
                 highest = i
             elif i > highest:
                 highest = i 
-        print("Max: %.2f" %(highest))
+        print("Maximum: %.2f" %(highest))
     #will optimize later by removing a number from the entire list after it has been checked
     def modeColumn(col_to_mode):
         modes = []
@@ -297,9 +298,9 @@ class DescribeData:
             
 
         if len(modes) == 1:
-            print("The mode is", str(modes)[1:-1], "and it occurs", mode_count, "time(s).")
+            print("Mode: ", str(modes)[1:-1], "and it occurs", mode_count, "time(s).")
         else:
-            print("The modes are", str(modes)[1:-1], "and they occur", mode_count, "time(s).")   
+            print("Modes:", str(modes)[1:-1], "and they occur", mode_count, "time(s).")   
 
     def medianColumn(col_to_median):
         values = data_file[col_to_median].tolist()
@@ -307,9 +308,9 @@ class DescribeData:
         median = sorted_values[int(len(sorted_values)/2)]
         median_even = sorted_values[int(len(sorted_values)/2) - 1]
         if len(values) % 2 == 0:
-            print("The median is ", int((median_even + median)/2))
+            print("Median:", int((median_even + median)/2))
         else:
-            print("The median is ", median)
+            print("Median: ", median)
 
     def uniqueColumn(col_to_unique):
         uniques = []
@@ -326,14 +327,14 @@ class DescribeData:
                     elif unique_temp == unique_count and numb not in uniques:
                         uniques.append(numb)
         if len(uniques) == 1:
-            print("The unique is", str(uniques)[1:-1], "and it occurs", unique_count, "time(s).")
+            print("Unique:", str(uniques)[1:-1], "and it occurs", unique_count, "time(s).")
         else:
-            print("The uniques are", str(uniques)[1:-1], "and they occur", unique_count, "time(s).")
+            print("Uniques: ", str(uniques)[1:-1], "and they occur", unique_count, "time(s).")
 
     def countColumn(col_to_count):
         values = data_file[col_to_count].tolist()
 
-        print("Count: ", len(values))
+        print("Count:", len(values))
 
 
     def percentile(col_to_percentile):
