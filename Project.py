@@ -105,8 +105,8 @@ class ExploreData:
         ExploreData.exploreDataMenu()
         
     def searchColumn():
+        
         col_to_search = ""
-        isNum = "false"
         while col_to_search != 'Q':
             try:
                 col_to_search = input("\nEnter the column you'd like to search inside of (q to quit): ").upper()
@@ -259,7 +259,7 @@ class DescribeData:
         values = data_file[col_to_mean].tolist()
         for i in values:
             meanSum += i
-        print("Mean: %.3f " % (meanSum/len(data_file.axes[0])))
+        print("Mean: %.6f " % (meanSum/len(data_file.axes[0])))
     def minColumn(col_to_min):
         lowest = None
         values = data_file[col_to_min].tolist()
@@ -268,7 +268,7 @@ class DescribeData:
                 lowest = i
             elif lowest > i:
                 lowest = i 
-        print("Mininum: %.2f" % (lowest))
+        print("Mininum: %.6f" % (lowest))
         
     def maxColumn(col_to_max):
         highest = None
@@ -278,7 +278,7 @@ class DescribeData:
                 highest = i
             elif i > highest:
                 highest = i 
-        print("Maximum: %.2f" %(highest))
+        print("Maximum: %.6f" %(highest))
     #will optimize later by removing a number from the entire list after it has been checked
     def modeColumn(col_to_mode):
         modes = []
@@ -308,7 +308,7 @@ class DescribeData:
         median = sorted_values[int(len(sorted_values)/2)]
         median_even = sorted_values[int(len(sorted_values)/2) - 1]
         if len(values) % 2 == 0:
-            print("Median:", int((median_even + median)/2))
+            print("Median:", float((median_even + median)/2))
         else:
             print("Median: ", median)
 
@@ -371,9 +371,6 @@ class DescribeData:
 
         print("Variance:", final_numb)
 
-
-
-
     def percentile(col_to_percentile):
         values = data_file[col_to_percentile].tolist()
         #Percentile needs a sorted list
@@ -386,10 +383,10 @@ class DescribeData:
         result60 = values[int(math.ceil((size*60) / 100)) -1]
         result80 = values[int(math.ceil((size*80) / 100)) -1]
         
-        print("20 Percentile (P20): %.3f" % (result20))
-        print("40 Percentile (P40): %.3f" % (result40))
-        print("60 Percentile (P60): %.3f" % (result60))
-        print("80 Percentile (P80): %.3f" % (result80))
+        print("20 Percentile (P20): %.6f" % (result20))
+        print("40 Percentile (P40): %.6f" % (result40))
+        print("60 Percentile (P60): %.6f" % (result60))
+        print("80 Percentile (P80): %.6f" % (result80))
 
     # Menu for part 3
     def describeDataMenu():
@@ -674,7 +671,7 @@ class Analysis:
         print('\n')
 
     def question9():
-        print("9. What airline has the oldest plane?")
+        print("9. What airline has the oldest plane? Print the five airlines with oldest planes recorded")
         plane_ages = data_file['PLANE_AGE'].tolist()
         unique_planes = []
         
@@ -736,8 +733,7 @@ class Analysis:
         elapsed_time = (t_1 - t_0)
         print("\nQuestions answered successfully time to answer: %.4f secs" % elapsed_time)
         mainMenu()
-        
-# everyone should use this Main menu method 
+         
 def mainMenu():
     while True:
        try:
@@ -762,12 +758,12 @@ def mainMenu():
             # Begins part 4 - Analysis
             elif mode == '4':
                 Analysis.analysisMenu()
+            # return to mainMenu
             elif mode == '5':
                 break
             else:
                 print("** Invalid mode selected **")
             
-      
        except FileNotFoundError:
            print("** File not Found try again **\n")
            loadFile()
