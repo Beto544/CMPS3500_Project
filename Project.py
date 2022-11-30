@@ -13,8 +13,8 @@
 # import libraries
 import pandas as pd
 import math
-import numpy as np
 import timeit
+
 global data_file
 
 # default file loading
@@ -41,13 +41,11 @@ def  loadFile():
     elapsed_time = (t_1 - t_0)
     print(f"File Loaded Succesfully ! Elapsed time: {elapsed_time:.04f} secs")
     
-   
-    
 # contains part 2
 class ExploreData:
-
+    
+    # Lists all columns in the dataset
     def listColumns():
-# Lists all columns in the dataset
         t_0 = timeit.default_timer()
     
         try:
@@ -83,12 +81,14 @@ class ExploreData:
             print("** Column not found, try again ** ")
             ExploreData.listColumns()
             
+    # counts distinct values in a given column       
     def countDistinctValues():
-    # prompt user for column to count distint values
+    
         print("-----------------------")
         col_to_count = ""
         while col_to_count != 'Q':
             try:
+                # prompt user for column to count distint values
                 col_to_count= input("\nFor which Column would you like to know the count of DISTINCT VALUES (q to quit): ").upper()
                 t_0 = timeit.default_timer()
                 if (col_to_count == 'Q'):
@@ -104,6 +104,7 @@ class ExploreData:
                 print("Column not found, try again")
         ExploreData.exploreDataMenu()
         
+    # searchs for a value in a given column    
     def searchColumn():
         
         col_to_search = ""
@@ -145,7 +146,7 @@ class ExploreData:
                 print("Searching error - Column and/or Value not found")
         ExploreData.exploreDataMenu()
         
-    # prompt user for which column to sort (Ascending or descending)
+    # sorts specified column   
     def sortColumns():
         print("-----------------------")
         col_to_sort = ""
@@ -153,51 +154,69 @@ class ExploreData:
                                       
         while col_to_sort != 'Q':
             try:
-                if col_to_sort == 'Q' :
-                    break
+                # prompt user for which column to sort (Ascending or descending)
                 col_to_sort = input("\nEnter a column you'd like to be SORTED (q to quit): ").upper()
                 if col_to_sort == 'Q':
                     break
-                try:
-                    sorting_method = str(input("Enter 1 for Ascending order or 2 for Descending: "))
-                    t_0 = timeit.default_timer()
+                
+                sorting_method = str(input("Enter 1 for Ascending order or 2 for Descending: "))
+                t_0 = timeit.default_timer()
+                              
+                # ascending sort
+                if sorting_method == '1':
+                    data_file.sort_values(by = col_to_sort, inplace =True)
+    
+                # decending sort
+                elif sorting_method == '2':
+                    data_file.sort_values(by = col_to_sort,ascending = False, inplace = True)
                     
-                    # ascending sort
-                    if sorting_method == '1':
-                        data_file.sort_values(by = col_to_sort, inplace =True)
-                        t_1 = timeit.default_timer()
-                        elapsed_time = (t_1 - t_0)
-                        print("\nSort successful time to sort: %.4f secs" % elapsed_time)
-                    # decending sort
-                    elif sorting_method == '2':
-                        data_file.sort_values(by = col_to_sort,ascending = False, inplace = True)
-                        t_1 = timeit.default_timer()
-                        elapsed_time = (t_1 - t_0)
-                        print("\nSort successful time to sort: %.4f secs" % elapsed_time)
-                    else:
-                        print("* ERROR PLEASE ENTER 1 or 2 *")
+                # start again  
+                else:
+                    print("* ERROR PLEASE ENTER 1 or 2 *")
+                    ExploreData.sortColumns()
+                    
+                # column indexes to print preview        
+                rows = data_file[col_to_sort].tolist()
+                num_of_rows= len(rows)
+                middle_row = int(num_of_rows/2)    
+                        
+                # prints the first 5, middle 5, and last 5 rows 
+                for i in rows[:5]:
+                    print(i)
+                print("**")
+                for k in rows[middle_row:middle_row+5]:
+                    print(k)
+                print("**")    
+                for k in rows[num_of_rows-6:num_of_rows-1]:
+                    print(k)
+                    
+                # calculate run time   
+                t_1 = timeit.default_timer()
+                elapsed_time = (t_1 - t_0)
+                print("\n%s Sorted successfully, time to sort: %.4f secs" % (col_to_sort,elapsed_time))
                    
-                except:
-                    print("Column not found!")
             except:
-                print("Invalid input please try again") 
+                print("Invalid column please try again") 
         ExploreData.exploreDataMenu()
         
+    # prints specified column   
     def printColmuns():
-    # Prompt user for a Column to print, and the total number of rows to be printed
+    
         print("-----------------------")
         col_to_print = ""
         num_of_rows = 0
         while col_to_print != 'Q':
             try:
+                # Prompt user for a Column to print, and the total number of rows to be printed
                 col_to_print = input("Enter a Column you'd like to be PRINTED (q to quit): ").upper()
                 if col_to_print == 'Q':
                     break
                 num_of_rows = int(input("                                     How many rows 100,500, or 5000?: "))
+                # start timer
                 t_0 = timeit.default_timer()
-    
+                # store column in list
                 rows = data_file[col_to_print].tolist()
-                
+                # ensuring good data
                 if num_of_rows <= len(rows):
                     if num_of_rows == 100:
                         rows_2 = rows[:num_of_rows]
@@ -211,9 +230,7 @@ class ExploreData:
                 else:
                     print("Not enough rows in Column")
                     ExploreData.printColmuns()
-                    
-                    
-               
+                # header
                 print(col_to_print)
                 print("***************")
                 
@@ -225,12 +242,13 @@ class ExploreData:
                 t_1 = timeit.default_timer()
                 elapsed_time = (t_1 - t_0)
                 print("\nPrint successful time to print: %.4f secs" % elapsed_time)
+                
             except KeyError:
                 print("Column not found, try again")
                 ExploreData.printColmuns()
         ExploreData.exploreDataMenu()
 
-    # Menu for mode 1, part 2 of the project
+    # Menu for ExporeData Class
     def exploreDataMenu():
         print("\nExplore Data")
         print("**************")
@@ -249,17 +267,19 @@ class ExploreData:
         elif operation == '6':
             mainMenu()
         else:
-            print("Invalid Operation Selected")
-
-# End of Part 2/ exploring the data       
+            print("Invalid Operation Selected")    
  
 class DescribeData:
+    
+    # calculates the mean of a given column
     def meanColumn(col_to_mean):
         meanSum = 0
         values = data_file[col_to_mean].tolist()
         for i in values:
             meanSum += i
         print("Mean: %.6f " % (meanSum/len(data_file.axes[0])))
+        
+    # Finds the mininum in a given column
     def minColumn(col_to_min):
         lowest = None
         values = data_file[col_to_min].tolist()
@@ -270,6 +290,7 @@ class DescribeData:
                 lowest = i 
         print("Mininum: %.6f" % (lowest))
         
+    # Finds the maximum in a given column   
     def maxColumn(col_to_max):
         highest = None
         values = data_file[col_to_max].tolist()
@@ -279,7 +300,9 @@ class DescribeData:
             elif i > highest:
                 highest = i 
         print("Maximum: %.6f" %(highest))
+        
     #will optimize later by removing a number from the entire list after it has been checked
+    # Finds the mode of a given column
     def modeColumn(col_to_mode):
         modes = []
         mode_count = 0
@@ -301,7 +324,8 @@ class DescribeData:
             print("Mode: ", str(modes)[1:-1], "and it occurs", mode_count, "time(s).")
         else:
             print("Modes:", str(modes)[1:-1], "and they occur", mode_count, "time(s).")   
-
+            
+    # Finds the median of a given column
     def medianColumn(col_to_median):
         values = data_file[col_to_median].tolist()
         sorted_values = sorted(values)
@@ -311,7 +335,8 @@ class DescribeData:
             print("Median:", float((median_even + median)/2))
         else:
             print("Median: ", median)
-
+            
+    # Counts unique values in a given column
     def uniqueColumn(col_to_unique):
         uniques = []
         unique_count = float("inf")
@@ -331,12 +356,13 @@ class DescribeData:
         else:
             print("Uniques: ", str(uniques)[1:-1], "and they occur", unique_count, "time(s).")
 
+    # Counts number of rows in a given column
     def countColumn(col_to_count):
         values = data_file[col_to_count].tolist()
 
         print("Count:", len(values))
 
-
+    # calculates the standard deviation in given column
     def standardDeviation(col_to_deviation):
         meanSum = 0
         values = data_file[col_to_deviation].tolist()
@@ -354,7 +380,8 @@ class DescribeData:
         final_numb = math.sqrt(temp_numb_two)
 
         print("Standard Deviation:", final_numb)
-
+        
+    # calculates the variance in given column
     def variance(col_to_variance):
         values = data_file[col_to_variance].tolist()
         meanSum = 0
@@ -371,6 +398,7 @@ class DescribeData:
 
         print("Variance:", final_numb)
 
+    # calculates the percentile(s) of given column
     def percentile(col_to_percentile):
         values = data_file[col_to_percentile].tolist()
         #Percentile needs a sorted list
@@ -388,7 +416,7 @@ class DescribeData:
         print("60 Percentile (P60): %.6f" % (result60))
         print("80 Percentile (P80): %.6f" % (result80))
 
-    # Menu for part 3
+    # Menu for DescibeData Class
     def describeDataMenu():
         print("\nDescribe Data")
         print("**************")
@@ -441,14 +469,13 @@ class DescribeData:
             print("\n**Error - Column not found")
             DescribeData.describeDataMenu()
             
-       
-# End of Part 3
-
 class Analysis:
-    def question1():
-        print("1. What was the month of the year in 2019 with most1 delays overall? And how many delays were recorded in that month?")
     
-        monthDict = {
+    # Solves question 1
+    def question1():
+        
+        print("1. What was the month of the year in 2019 with most1 delays overall? And how many delays were recorded in that month?")
+        month_dict = {
             "January ": 0,"February": 0,"March": 0,"April ": 0, "May": 0,
             "June": 0,"July ": 0,"August": 0,"September": 0,"October ": 0,
             "November": 0,"December": 0,
@@ -466,16 +493,18 @@ class Analysis:
             
         index = 0
         # updates the dictonary with count of delays
-        for key in monthDict:
-            monthDict[key] = delay_count[index]
+        for key in month_dict:
+            month_dict[key] = delay_count[index]
             index +=1
             
         # print answer
-        month_with_max_delays = max(monthDict, key = monthDict.get)
-        count_max_delays = max(monthDict.values())
+        month_with_max_delays = max(month_dict, key = month_dict.get)
+        count_max_delays = max(month_dict.values())
         print("\n %s had the most delays in 2019 with a total count of: %d delays\n" % (month_with_max_delays,count_max_delays))
         
+     # Solves question 2
     def question2():
+        
         print("2. What was the day in 2019 with most delays overall? And how many delays were recorded in that day? ")
         
         weekDict = {
@@ -502,10 +531,10 @@ class Analysis:
         count_max_delays = max(weekDict.values())
         print("\n %s had the most delays in 2019 with a total count of: %d delays\n" % (day_with_max_delays,count_max_delays))
         
-    # not finished 
+    # Solves question 3
     def question3():
+        
         print("3. What airline carrier experience the most delays in January, July and December ")
-            
         unique_airlines = []
         air_lines = data_file['CARRIER_NAME'].tolist()
         
@@ -563,7 +592,9 @@ class Analysis:
         print("%s had the most delays in July with a total count of: %d" % (airline_with_max_delays,july_max_delays))
         print("%s had the most delays in December with a total count of: %d\n" % (airline_with_max_delays,dec_max_delays))
 
+    # Solves question 4
     def question4():
+        
         print("4. What was the average plane age of all planes with delays operated by American Airlines inc.")
         
         # pulls columns with matching data and creates new dataframe with that data       
@@ -579,7 +610,9 @@ class Analysis:
         # print answer
         print("\nThe average plane age of all planes with delays operated American Airlines is: %.3f\n" % (average_age))
         
+    # Solves question 5
     def question5():
+        
         print("5. How many planes were delayed for more than 15 minutes during days with 'heavy snow' (Days when the inches of snow on ground were 15 or more) )? ")
         
         # pulls columns with matching data and creates a new dataframe with that data  
@@ -592,9 +625,10 @@ class Analysis:
         # print answer
         print("\n%d planes were delayed for more than 15mins due to heavy snow\n" % (num_of_planes))
         
+    # Solves question 6  
     def question6():
+        
        print("6. What are the 5 Airports that had the most delays in 2019?")
-       
        unique_airports = []
        delay_count = []
        air_ports = data_file['DEPARTING_AIRPORT'].tolist()
@@ -630,9 +664,10 @@ class Analysis:
                    
        print("\n")
        
+     # Solves question 7
     def question7():
-        print("7. How many airlines are included in the data set? Print the first 5 in alphabetical order.")
         
+        print("7. How many airlines are included in the data set? Print the first 5 in alphabetical order.")
         # find unique airlines
         unique_airlines = []
         airlines = data_file['CARRIER_NAME'].tolist()
@@ -650,7 +685,10 @@ class Analysis:
             print(airline)
 
         print('\n')
+        
+    # Solves question 8
     def question8():
+        
         print("8. How many departing airports are included in the data set? Print the last 5 in alphabetical order.")
         # find unique airlines
         unique_dep_airports = []
@@ -670,7 +708,9 @@ class Analysis:
 
         print('\n')
 
+    # Solves question 9
     def question9():
+        
         print("9. What airline has the oldest plane? Print the five airlines with oldest planes recorded")
         plane_ages = data_file['PLANE_AGE'].tolist()
         unique_planes = []
@@ -690,8 +730,9 @@ class Analysis:
         for i in airlines_with_old_planes:
             print(i)
          
-       
+    # Solves question 10
     def question10():
+        
         print("10. What is the airport that averaged the greatest number of passengers recorded in 2019? Print the 5 airport that averaged the greatest number of passengers in 2019.")
         avg_pass = data_file['AVG_MONTHLY_PASS_AIRPORT'].tolist()
         unique_planes = []
@@ -699,10 +740,14 @@ class Analysis:
         for plane in plane_ages:
            if plane not in unique_planes:
                unique_planes.append(plane) 
+               
+     # Solves question 11
     def question11():
-       print("11. What was the smallest delay ever recorded? print the airline and airports of this event.")
-       
         
+        print("11. What was the smallest delay ever recorded? print the airline and airports of this event.")
+       
+    
+    # menu for Analysis Class   
     def analysisMenu():
         print("\nAnalysis")
         print("*********")
@@ -737,17 +782,16 @@ class Analysis:
 def mainMenu():
     while True:
        try:
-           
             print("\nMain Menu")
             print("***********")
             print("1. Load Data\n2. Explore the data \n3. Describe the data")
             print("4. Analysis \n5. Quit")
             mode = str(input("\nSelect a mode: "))
         
-            # Begins Part 2 - Exploring the data 
+            # Begins - data loading 
             if mode == '1':
                 loadFile()
-                
+            # Begins Part 2 - Exploring the data 
             elif mode == '2':
                 ExploreData.exploreDataMenu()
     
@@ -758,9 +802,11 @@ def mainMenu():
             # Begins part 4 - Analysis
             elif mode == '4':
                 Analysis.analysisMenu()
-            # return to mainMenu
+                
+            # Ends program
             elif mode == '5':
-                break
+                raise SystemExit
+            
             else:
                 print("** Invalid mode selected **")
             
