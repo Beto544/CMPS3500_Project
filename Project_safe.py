@@ -695,13 +695,8 @@ class Analysis:
          
        
     def question10():
-        print("10. What is the airport that averaged the greatest number of passengers recorded in 2019? Print the 5 airport that averaged the greatest number of passengers in 2019.")
-        avg_pass = data_file['AVG_MONTHLY_PASS_AIRPORT'].tolist()
-        unique_planes = []
-        
-        for plane in plane_ages:
-           if plane not in unique_planes:
-               unique_planes.append(plane) 
+        print("10. What was the greatest delay ever recorded? print the airline and airpots of this event.")
+            
     def question11():
        print("11. What was the smallest delay ever recorded? print the airline and airports of this event.")
        
