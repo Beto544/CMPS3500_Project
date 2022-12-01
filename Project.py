@@ -719,7 +719,7 @@ class Analysis:
            if plane not in unique_planes:
                unique_planes.append(plane)
         sorted_list = sorted(unique_planes, reverse=True)
-        #final_list = sorted_list[(len(sorted_list)-5):len(sorted_list)]
+
         airlines_with_old_planes = []
         for i in sorted_list:
             if data_file.loc[data_file['PLANE_AGE'] == i]['CARRIER_NAME'].values[0] not in airlines_with_old_planes:
@@ -733,20 +733,48 @@ class Analysis:
     # Solves question 10
     def question10():
         
-        print("10. What is the airport that averaged the greatest number of passengers recorded in 2019? Print the 5 airport that averaged the greatest number of passengers in 2019.")
-        avg_pass = data_file['AVG_MONTHLY_PASS_AIRPORT'].tolist()
-        unique_planes = []
+        print("\n9. What is the airport that averaged the greatest number of passengers recorded in 2019? Print the 5 airport that averaged the greatest number of passengers in 2019.")
+        passengers = data_file['AVG_MONTHLY_PASS_AIRPORT'].tolist()
+        unique_pass = []
         
-        for plane in plane_ages:
-           if plane not in unique_planes:
-               unique_planes.append(plane) 
-               
-     # Solves question 11
+        for i in passengers:
+           if i not in unique_pass:
+               unique_pass.append(i)
+        sorted_list = sorted(unique_pass, reverse=True)
+            
+        airport_amounts = []
+        for i in sorted_list:
+            if data_file.loc[data_file['AVG_MONTHLY_PASS_AIRPORT'] == i]['DEPARTING_AIRPORT'].values[0] not in airport_amounts:
+                airport_amounts.append(data_file.loc[data_file['AVG_MONTHLY_PASS_AIRPORT'] == i]['DEPARTING_AIRPORT'].values[0])
+                if len(airport_amounts) == 5:
+                    break
+        print("\n %s was the airport with most average passengers at  %d passengers, and the five airports with most were:" %(airport_amounts[0], sorted_list[0]))
+        for i in airport_amounts:
+            print(i)
+
+    # Solves question 11
     def question11():
+        print("\n11. What is the airline that averaged the greatest number of employees (Flight attendants and ground service) in 2019? Print the 5 airlines that averaged the greatest number of employees in 2019.")
+
+        employees = data_file['FLT_ATTENDANTS_PER_PASS'].tolist()
+        unique_employees = []
+
+        for i in employees:
+            if i not in unique_employees:
+                unique_employees.append(i)
         
-        print("11. What was the smallest delay ever recorded? print the airline and airports of this event.")
-       
-    
+        sorted_list = sorted(unique_employees, reverse = True)
+
+        employee_amounts = []
+        for i in sorted_list:
+            if data_file.loc[data_file['FLT_ATTENDANTS_PER_PASS'] == i]['CARRIER_NAME'].values[0] not in employee_amounts:
+                employee_amounts.append(data_file.loc[data_file['FLT_ATTENDANTS_PER_PASS'] == i]['CARRIER_NAME'].values[0])
+                if len(employee_amounts) == 5:
+                    break
+        print("\n %s was the airline with most average employees at  %.7f employees per passenger, and the five airlines with most were:" %(employee_amounts[0], sorted_list[0]))
+        for i in employee_amounts:
+            print(i)
+     
     # menu for Analysis Class   
     def analysisMenu():
         print("\nAnalysis")
