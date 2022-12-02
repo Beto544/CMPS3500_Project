@@ -7,7 +7,7 @@
 # Student 1: Hunberto Pascual
 # Student 2: Kenneth Wood
 # Student 3: Nathan Wardinsky
-# Description: Implementation Basic Data Analysys Routines
+# Description: Implementation Basic Data Analysis Routines
 # *****************************************************************/
 
 # import libraries
@@ -727,8 +727,7 @@ class Analysis:
             }
         daily_delay_count = []
         for i in range (1,8):
-            delays_in_week = delays_in_month[(delays_in_month['DAY_OF_WEEK'] == i) & (delays_in_month\
-                ['DEP_DEL15'].isin([1]))]
+            delays_in_week = data_file[(data_file['DAY_OF_WEEK'] == i) & (data_file['DEP_DEL15'].isin([1]) & (data_file['MONTH'] == 6))]
             daily_delay_count.append(len(delays_in_week.index))
             
         week_index = 0
@@ -915,12 +914,15 @@ class Analysis:
                 func_to_call()
                 t_2 = timeit.default_timer()
                 elapsed_time = (t_2 - t_1)
-                print("- Question%d, time to answer: %.4f secs\n\n" % (i,elapsed_time))
+                if i == 6:
+                    print("- Questions %d & 7, time to answer: %.6f secs\n\n" % (i,elapsed_time))
+                else:
+                    print("- Question%d, time to answer: %.6f secs\n\n" % (i,elapsed_time))
                 
             # total time taken    
             t_final = timeit.default_timer()
             total_time = (t_final - t_begin)
-            print("Total time to answer: %.4f secs" % \
+            print("Total time to answer: %.6f secs" % \
                 total_time)
             
             mainMenu()
