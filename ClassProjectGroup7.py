@@ -3,7 +3,7 @@
 # ASGT: Class Project
 # ORGN: CSUB - CMPS 3500
 # FILE: ClassProjectGroup7.py
-# DATE: 11/27/22
+# DATE: 12/02/22
 # Student 1: Hunberto Pascual
 # Student 2: Kenneth Wood
 # Student 3: Nathan Wardinsky
@@ -541,10 +541,151 @@ class DescribeData:
             
 class Analysis:
     
-    # Solves question 1
+     # Solves question 1
     def question1():
         
-        print("1. What was the month of the year in 2019 with most delays overall?"+
+        print("1. How many airlines are included in the data set? Print the first"+
+              " 5 in alphabetical order.")
+        print("-----------------------")
+        # find unique airlines
+        unique_airlines = []
+        airlines = data_file['CARRIER_NAME'].tolist()
+        for airline in airlines:
+           if airline not in unique_airlines:
+               unique_airlines.append(airline)
+
+        #sort the list alphabetically
+        sorted_list = sorted(unique_airlines)
+        amount = len(sorted_list)
+        first_five = sorted_list[0:5]
+        print("%s Arlines in the data set." % (amount))
+        print("\nFive first airlines in alphabetical order:")
+        print("***************************************")
+        for airline in first_five:
+            print(airline)
+        print('\n')  
+        
+    # Solves question 2
+    def question2():
+        
+        print("2. How many departing airports are included in the data set? Print"+
+              "the last 5 in alphabetical order.")
+        print("-----------------------")
+        # find unique airlines
+        unique_dep_airports = []
+        dep_airports = data_file['DEPARTING_AIRPORT'].tolist()
+        for dep_airport in dep_airports:
+           if dep_airport not in unique_dep_airports:
+               unique_dep_airports.append(dep_airport)
+
+        #sort the list alphabetically
+        sorted_list = sorted(unique_dep_airports)
+        amount = len(sorted_list)
+        last_five = sorted_list[(len(sorted_list)-5):len(sorted_list)]
+        print("%d departing airports in the data set." %(amount))
+        print("\nLast five departing airports in alphabetical order:")
+        print("***************************************************")
+        for airline in last_five:
+            print(airline)
+        print('\n')
+        
+    # Solves question 3
+    def question3():
+        
+        print("3. What airline has the oldest plane? Print the five airlines with "+
+              "the oldest planes recorded")
+        print("-----------------------")
+        plane_ages = data_file['PLANE_AGE'].tolist()
+        unique_planes = []
+        
+        for plane in plane_ages:
+           if plane not in unique_planes:
+               unique_planes.append(plane)
+        sorted_list = sorted(unique_planes, reverse=True)
+
+        airlines_with_old_planes = []
+        for i in sorted_list:
+            if data_file.loc[data_file['PLANE_AGE'] == i]['CARRIER_NAME'].values[0]\
+                not in airlines_with_old_planes:
+                airlines_with_old_planes.append(data_file.loc[data_file\
+                    ['PLANE_AGE']== i]['CARRIER_NAME'].values[0])
+                if len(airlines_with_old_planes) == 5:
+                    break
+        print("%s was the airline with oldest plane at: %d years" \
+            %(airlines_with_old_planes[0],sorted_list[0]))
+        print("\nTop five airlines with oldest planes:")
+        print("***************************************")
+        for i in airlines_with_old_planes:
+            print(i)
+        print('\n')
+        
+    # Solves question 4
+    def question4():
+        
+        print("\n4. What is the airport that averaged the greatest number of "+
+              "passengers recorded in 2019? Print the 5 airport that averaged "+
+              "the greatest number of passengers in 2019.")
+        print("-----------------------")
+        passengers = data_file['AVG_MONTHLY_PASS_AIRPORT'].tolist()
+        unique_pass = []
+        
+        for i in passengers:
+           if i not in unique_pass:
+               unique_pass.append(i)
+        sorted_list = sorted(unique_pass, reverse=True)
+            
+        airport_amounts = []
+        for i in sorted_list:
+            if data_file.loc[data_file['AVG_MONTHLY_PASS_AIRPORT'] == i]\
+                ['DEPARTING_AIRPORT'].values[0] not in airport_amounts:
+                airport_amounts.append(data_file.loc[data_file\
+                    ['AVG_MONTHLY_PASS_AIRPORT'] == i]['DEPARTING_AIRPORT'].values[0])
+                if len(airport_amounts) == 5:
+                    break
+        print("%s airport had the hihgest average passengers at  %d passengers"\
+            %(airport_amounts[0],sorted_list[0]))
+        print("\nTop five airports with highest averaged passengers:")
+        print("***************************************")
+        for i in airport_amounts:
+            print(i)
+        print('\n')
+        
+    # Solves question 5
+    def question5():
+        print("\n5. What is the airline that averaged the greatest number of "+
+              "employees (Flight attendants and ground service) in 2019? Print"+
+              "the 5 airlines that averaged the greatest number of employees in"+
+              " 2019.")
+        print("-----------------------")
+        employees = data_file['FLT_ATTENDANTS_PER_PASS'].tolist()
+        unique_employees = []
+
+        for i in employees:
+            if i not in unique_employees:
+                unique_employees.append(i)
+        
+        sorted_list = sorted(unique_employees, reverse = True)
+
+        employee_amounts = []
+        for i in sorted_list:
+            if data_file.loc[data_file['FLT_ATTENDANTS_PER_PASS'] == i]\
+                ['CARRIER_NAME'].values[0] not in employee_amounts:
+                employee_amounts.append(data_file.loc[data_file\
+                    ['FLT_ATTENDANTS_PER_PASS'] == i]['CARRIER_NAME'].values[0])
+                if len(employee_amounts) == 5:
+                    break
+        print("%s was the airline with the most average employees at %.7f" % \
+            (employee_amounts[0], sorted_list[0]))
+        print("\nTop five airlines with highest averaged employees:")
+        print("**************************************************")
+        for i in employee_amounts:
+            print(i)
+        print('\n')
+        
+        # Solves questions 6 & 7
+    def question6():
+        
+        print("6. What was the month of the year in 2019 with most delays overall?"+
               " And how many delays were recorded in that month?")
         print("-----------------------")
         month_dict = {
@@ -554,7 +695,7 @@ class Analysis:
             }
 
         # Stores the count of delays in each month
-        delay_count = []
+        monthly_delay_count = []
         
         # A Delay has occured when there is a 1 in the DEP_DEL15 Column
         # creates new dataframe of only rows with a delay for a given month
@@ -562,56 +703,51 @@ class Analysis:
         for i in range (1,13):
             delays_in_month = data_file[(data_file['MONTH'] == i) & (data_file\
                 ['DEP_DEL15'].isin([1]))]
-            delay_count.append(len(delays_in_month.index))
+            monthly_delay_count.append(len(delays_in_month.index))
             
-        index = 0
+        month_index = 0
         # updates the dictonary with count of delays
         for key in month_dict:
-            month_dict[key] = delay_count[index]
-            index +=1
+            month_dict[key] = monthly_delay_count[month_index]
+            month_index +=1
             
         # print answer
         month_with_max_delays = max(month_dict, key = month_dict.get)
-        count_max_delays = max(month_dict.values())
+        max_count_monthly_delays = max(month_dict.values())
         print("%s had the most delays in 2019 with a total count of: %d delays\n" \
-            % (month_with_max_delays,count_max_delays))
+            % (month_with_max_delays,max_count_monthly_delays))
         
-     # Solves question 2
-    def question2():
-        
-        print("2. What was the day in 2019 with most delays overall? And how many "+
-              "delays were recorded in that day? ")
+        # question 7
+        print("7.What was the month of the year in 2019 with most delays overall? "+
+              "And how many delays were recorded in that day?")
         print("-----------------------")
-        weekDict = {
+        week_dict = {
             "Monday": 0,"Tuesday": 0,"Wednesday": 0,"Thursday": 0, "Friday": 0,
             "Saturday": 0,"Sunday ": 0,
             }
-        delay_count = []
-        
-        # A Delay has occured when there is a 1 in the DEP_DEL15 Column
-        # creates a new dataframe comprised of only rows with a delay for a given day
-        # the number of rows of that dataframe is equal to the total delays for that day
+        daily_delay_count = []
         for i in range (1,8):
-            delays_in_week = data_file[(data_file['DAY_OF_WEEK'] == i) & (data_file\
+            delays_in_week = delays_in_month[(delays_in_month['DAY_OF_WEEK'] == i) & (delays_in_month\
                 ['DEP_DEL15'].isin([1]))]
-            delay_count.append(len(delays_in_week.index))
+            daily_delay_count.append(len(delays_in_week.index))
             
-        index = 0
+        week_index = 0
         # updates the dictonary with count of delays
-        for key in weekDict:
-            weekDict[key] = delay_count[index]
-            index +=1
+        for key in week_dict:
+            week_dict[key] = daily_delay_count[week_index]
+            week_index +=1
             
         # print answer
-        day_with_max_delays = max(weekDict, key = weekDict.get)
-        count_max_delays = max(weekDict.values())
-        print("%s had the most delays in 2019 with a total count of: %d delays\n" % \
-            (day_with_max_delays,count_max_delays))
+        day_with_max_delays = max(week_dict, key = week_dict.get)
+        max_count_daily_delays = max(week_dict.values())
+        print("from % s , %s had the most delays in 2019 with a total count of: %d delays\n" % \
+            (month_with_max_delays,day_with_max_delays,max_count_daily_delays))
         
-    # Solves question 3
-    def question3():
+     
+    # Solves question 8
+    def question8():
         
-        print("3. What airline carrier experience the most delays in January, July"+
+        print("8. What airline carrier experience the most delays in January, July"+
               " and December ")
         print("-----------------------")
         unique_airlines = []
@@ -681,10 +817,10 @@ class Analysis:
         print("%s had the most delays in December with a total count of: %d\n" % 
               (airline_with_max_delays,dec_max_delays))
 
-    # Solves question 4
-    def question4():
+    # Solves question 9
+    def question9():
         
-        print("4. What was the average plane age of all planes with delays operated"+
+        print("9. What was the average plane age of all planes with delays operated"+
               " by American Airlines inc.")
         print("-----------------------")
         # pulls columns with matching data and creates new dataframe with that data       
@@ -702,12 +838,12 @@ class Analysis:
         print("The average plane age of all planes with delays operated American"+
               " Airlines is: %.3f\n" % (average_age))
         
-    # Solves question 5
-    def question5():
+    # Solves question 10
+    def question10():
         
-        print("5. How many planes were delayed for more than 15 minutes during "+
+        print("10. How many planes were delayed for more than 15 minutes during "+
               "days with 'heavy snow' (Days when the inches of snow on ground"+
-              " were 15 or more) )? ")
+              " were 15in or more) )? ")
         print("-----------------------")
         # pulls columns with matching data and creates a new dataframe   
         planes_delayed = data_file[(data_file['SNOW'] >= 15) & (data_file\
@@ -721,10 +857,10 @@ class Analysis:
         print("%d planes were delayed for more than 15mins due to heavy snow\n" % \
             (num_of_planes))
         
-    # Solves question 6  
-    def question6():
+    # Solves question 11
+    def question11():
         
-       print("6. What are the 5 Airports that had the most delays in 2019?")
+       print("11. What are the 5 Departing Airports that had the most delays in 2019?")
        print("-----------------------")
        unique_airports = []
        delay_count = []
@@ -762,145 +898,6 @@ class Analysis:
        
        print('\n')
                 
-     # Solves question 7
-    def question7():
-        
-        print("7. How many airlines are included in the data set? Print the first"+
-              " 5 in alphabetical order.")
-        print("-----------------------")
-        # find unique airlines
-        unique_airlines = []
-        airlines = data_file['CARRIER_NAME'].tolist()
-        for airline in airlines:
-           if airline not in unique_airlines:
-               unique_airlines.append(airline)
-
-        #sort the list alphabetically
-        sorted_list = sorted(unique_airlines)
-        amount = len(sorted_list)
-        first_five = sorted_list[0:5]
-        print("%s Arlines in the data set." % (amount))
-        print("\nFive first airlines in alphabetical order:")
-        print("***************************************")
-        for airline in first_five:
-            print(airline)
-        print('\n')  
-        
-    # Solves question 8
-    def question8():
-        
-        print("8. How many departing airports are included in the data set? Print"+
-              "the last 5 in alphabetical order.")
-        print("-----------------------")
-        # find unique airlines
-        unique_dep_airports = []
-        dep_airports = data_file['DEPARTING_AIRPORT'].tolist()
-        for dep_airport in dep_airports:
-           if dep_airport not in unique_dep_airports:
-               unique_dep_airports.append(dep_airport)
-
-        #sort the list alphabetically
-        sorted_list = sorted(unique_dep_airports)
-        amount = len(sorted_list)
-        last_five = sorted_list[(len(sorted_list)-5):len(sorted_list)]
-        print("%d departing airports in the data set." %(amount))
-        print("\nLast five departing airports in alphabetical order:")
-        print("***************************************************")
-        for airline in last_five:
-            print(airline)
-        print('\n')
-        
-    # Solves question 9
-    def question9():
-        
-        print("9. What airline has the oldest plane? Print the five airlines with "+
-              "the oldest planes recorded")
-        print("-----------------------")
-        plane_ages = data_file['PLANE_AGE'].tolist()
-        unique_planes = []
-        
-        for plane in plane_ages:
-           if plane not in unique_planes:
-               unique_planes.append(plane)
-        sorted_list = sorted(unique_planes, reverse=True)
-
-        airlines_with_old_planes = []
-        for i in sorted_list:
-            if data_file.loc[data_file['PLANE_AGE'] == i]['CARRIER_NAME'].values[0]\
-                not in airlines_with_old_planes:
-                airlines_with_old_planes.append(data_file.loc[data_file\
-                    ['PLANE_AGE']== i]['CARRIER_NAME'].values[0])
-                if len(airlines_with_old_planes) == 5:
-                    break
-        print("%s was the airline with oldest plane at: %d years" \
-            %(airlines_with_old_planes[0],sorted_list[0]))
-        print("\nTop five airlines with oldest planes:")
-        print("***************************************")
-        for i in airlines_with_old_planes:
-            print(i)
-        print('\n')
-        
-    # Solves question 10
-    def question10():
-        
-        print("\n10. What is the airport that averaged the greatest number of "+
-              "passengers recorded in 2019? Print the 5 airport that averaged "+
-              "the greatest number of passengers in 2019.")
-        print("-----------------------")
-        passengers = data_file['AVG_MONTHLY_PASS_AIRPORT'].tolist()
-        unique_pass = []
-        
-        for i in passengers:
-           if i not in unique_pass:
-               unique_pass.append(i)
-        sorted_list = sorted(unique_pass, reverse=True)
-            
-        airport_amounts = []
-        for i in sorted_list:
-            if data_file.loc[data_file['AVG_MONTHLY_PASS_AIRPORT'] == i]\
-                ['DEPARTING_AIRPORT'].values[0] not in airport_amounts:
-                airport_amounts.append(data_file.loc[data_file\
-                    ['AVG_MONTHLY_PASS_AIRPORT'] == i]['DEPARTING_AIRPORT'].values[0])
-                if len(airport_amounts) == 5:
-                    break
-        print("%s airport had the hihgest average passengers at  %d passengers"\
-            %(airport_amounts[0],sorted_list[0]))
-        print("\nTop five airports with highest averaged passengers:")
-        print("***************************************")
-        for i in airport_amounts:
-            print(i)
-        print('\n')
-    # Solves question 11
-    def question11():
-        print("\n11. What is the airline that averaged the greatest number of "+
-              "employees (Flight attendants and ground service) in 2019? Print"+
-              "the 5 airlines that averaged the greatest number of employees in"+
-              " 2019.")
-        print("-----------------------")
-        employees = data_file['FLT_ATTENDANTS_PER_PASS'].tolist()
-        unique_employees = []
-
-        for i in employees:
-            if i not in unique_employees:
-                unique_employees.append(i)
-        
-        sorted_list = sorted(unique_employees, reverse = True)
-
-        employee_amounts = []
-        for i in sorted_list:
-            if data_file.loc[data_file['FLT_ATTENDANTS_PER_PASS'] == i]\
-                ['CARRIER_NAME'].values[0] not in employee_amounts:
-                employee_amounts.append(data_file.loc[data_file\
-                    ['FLT_ATTENDANTS_PER_PASS'] == i]['CARRIER_NAME'].values[0])
-                if len(employee_amounts) == 5:
-                    break
-        print("%s was the airline with the most average employees at %.7f" % \
-            (employee_amounts[0], sorted_list[0]))
-        print("\nTop five airlines with highest averaged employees:")
-        print("**************************************************")
-        for i in employee_amounts:
-            print(i)
-        print('\n')
     # menu for Analysis Class   
     def analysisMenu():
         
@@ -908,8 +905,10 @@ class Analysis:
             print("\nAnalysis")
             print("*********\n")
             t_begin = timeit.default_timer()
-            # call all the question functions
-            for i in range (1,12):
+            
+            # calls all the question functions
+            question_order = (1,2,3,4,5,6,8,9,10,11)
+            for i in question_order:
                 t_1 = timeit.default_timer()
                 func_name = "question"+str(i)
                 func_to_call = getattr(Analysis,func_name)
