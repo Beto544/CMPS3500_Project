@@ -57,7 +57,7 @@ def  loadFile():
         print(f"File Loaded Succesfully! Elapsed time: {elapsed_time:.04f} secs")
     
     except FileNotFoundError:
-        print("File not found, try again")
+        print("\n** File not found **")
         loadFile()
         
 # contains part 2
@@ -104,7 +104,7 @@ class ExploreData:
                         % (col_to_drop,elapsed_time))
                     
         except KeyError:
-            print("\n** Column not found, try again ** ")
+            print("\n** Column not found ** ")
             ExploreData.dropColumns()
         except:
             print("Error occured")             
@@ -135,7 +135,7 @@ class ExploreData:
                 elapsed_time = (t_1 - t_0)
                 print("\nCount successful time to count: %.4f secs" % elapsed_time)
             except:
-                print("Column not found, try again")
+                print("Column not found ")
         ExploreData.exploreDataMenu()
         
     # searchs for a value in a given column    
@@ -218,7 +218,7 @@ class ExploreData:
                     
                 # start again  
                 else:
-                    print("* ERROR PLEASE ENTER 1 or 2 *")
+                    print("* Error enter 1 or 2 *")
                     ExploreData.sortColumns()
                     
                 # column indexes to print preview        
@@ -244,7 +244,7 @@ class ExploreData:
                
                    
             except KeyError:
-                print("Invalid column please try again") 
+                print("** Column not found **") 
         ExploreData.exploreDataMenu()
         
     # prints specified column   
@@ -298,10 +298,10 @@ class ExploreData:
                 ExploreData.listColumns()
                 
             except KeyError:
-                print("Column not found, try again")
+                print("** Column not found **")
                 ExploreData.printColumns()
             except ValueError:
-                print("Error - Enter only numbers for number of rows")  
+                print("Error - number of rows must be digits")  
         ExploreData.exploreDataMenu()
 
     # Menu for ExporeData Class
@@ -961,7 +961,7 @@ def mainMenu():
                 print("** Invalid mode selected **")
             
        except FileNotFoundError:
-           print("** File not Found try again **\n")
+           print("** File not Found **\n")
            loadFile()
        except NameError as ne:
            print(ne)
