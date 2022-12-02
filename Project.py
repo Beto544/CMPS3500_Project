@@ -14,6 +14,7 @@
 import pandas as pd
 import math
 import timeit
+import os
 
 global data_file
 
@@ -25,76 +26,109 @@ data_file.index = blankIndex
 
 # loads user specified file into dataframe
 def  loadFile():
-    global data_file
-    file_name = str(input("Enter the file name to load (q to quit): "))
-    if file_name == 'q' or file_name == 'Q':
-        mainMenu()
-    t_0 = timeit.default_timer()
-    data_file = pd.read_csv(file_name)
-    # removes the index column
-    blankIndex = [''] * len(data_file)
-    data_file.index = blankIndex
-    t_1 = timeit.default_timer()
-    print("\nFile: '%s'" % (file_name))
-    print("Total Columns Read: %d" % (data_file.shape[1]))
-    print("Total Rows Read: %d" % (len(data_file.index)))
-    elapsed_time = (t_1 - t_0)
-    print(f"File Loaded Succesfully ! Elapsed time: {elapsed_time:.04f} secs")
     
+    print("-----------------------")
+    global data_file
+    try: 
+        # get current directory and print files
+        dir_path = os.path.dirname(os.path.realpath(__file__))
+        dir_files = os.listdir(dir_path)
+        print("Files in current directory:")
+        print("***************************")
+        for file in dir_files:
+            print(file)
+        # get file name for user
+        file_name = str(input("\nEnter the file name to load (q to quit): "))
+        if file_name == 'q' or file_name == 'Q':
+            mainMenu()
+        t_0 = timeit.default_timer()
+        data_file = pd.read_csv(file_name)
+        # removes the index column
+        blankIndex = [''] * len(data_file)
+        data_file.index = blankIndex
+        # remove duplicate rows
+        data_file.drop_duplicates()
+        t_1 = timeit.default_timer()
+        print("\nFile: '%s'" % (file_name))
+        print("Total Columns Read: %d" % (data_file.shape[1]))
+        print("Total Rows Read: %d" % (len(data_file.index)))
+        t_1 = timeit.default_timer()
+        elapsed_time = (t_1 - t_0)
+        print(f"File Loaded Succesfully! Elapsed time: {elapsed_time:.04f} secs")
+    
+    except FileNotFoundError:
+        print("File not found, try again")
+        loadFile()
+        
 # contains part 2
 class ExploreData:
     
     # Lists all columns in the dataset
     def listColumns():
+        print("-----------------------")
         t_0 = timeit.default_timer()
     
+        #try:
+        print("\nAvailable columns:")
+        print("********************")
+        for col in data_file.columns:
+            print(col)
+        
+        print("-----------------------")
+        t_1 = timeit.default_timer()
+        elapsed_time = (t_1 - t_0)
+        print("Printing successful time to print: %.4f secs" % elapsed_time)
+        
+    # drop any column               
+    def dropColumns():
+        
         try:
-            print("\nThe columns are: \n")
-            for col in data_file.columns:
-                print(col)
-            
-            print("-----------------------")
-            t_1 = timeit.default_timer()
-            elapsed_time = (t_1 - t_0)
-            print("Printing successful time to print: %.4f secs" % elapsed_time)
-            
-            
+            if not KeyError:
+                ExploreData.listColumns()
+            print("-----------------------")   
             col_to_drop= ""
-            #Prompt user to drop columns
             while col_to_drop  != 'Q':
-                    col_to_drop = input("\nEnter a Column you'd like to DROP (q to quit): ").upper()
+                    col_to_drop = input("\nEnter a Column you'd like to DROP"+
+                                        " (q to quit): ").upper()
                     t_0 = timeit.default_timer()
                     if (col_to_drop == 'Q'):
                         break
+                    
                     data_file.drop(col_to_drop, axis =1,inplace =True)
-                    # print updated columns
-                    print("\n Updated Columns :\n")
+                    print("\nUpdated Columns:\n")
                     for cols in data_file.columns:
                         print(cols)
                     t_1 = timeit.default_timer()
                     elapsed_time = (t_1 - t_0)
-                    print("\nDrop successful time to drop: %.4f secs" % elapsed_time)
-            
-            ExploreData.exploreDataMenu()
-            
+                    print("\n%s droped successfully time to drop: %.4f secs" \
+                        % (col_to_drop,elapsed_time))
+                    
         except KeyError:
-            print("** Column not found, try again ** ")
-            ExploreData.listColumns()
-            
+            print("\n** Column not found, try again ** ")
+            ExploreData.dropColumns()
+        except:
+            print("Error occured")             
+        ExploreData.exploreDataMenu()
+        
+    
     # counts distinct values in a given column       
     def countDistinctValues():
     
-        print("-----------------------")
         col_to_count = ""
         while col_to_count != 'Q':
             try:
+                print("-----------------------")
+                print("Count distinct values")
+                print("*********************")
                 # prompt user for column to count distint values
-                col_to_count= input("\nFor which Column would you like to know the count of DISTINCT VALUES (q to quit): ").upper()
+                col_to_count= input("\nFor which Column would you like to know the "+
+                                    "count of DISTINCT VALUES (q to quit): ").upper()
                 t_0 = timeit.default_timer()
                 if (col_to_count == 'Q'):
                     break
                 distinct_val_count = len(pd.unique(data_file[col_to_count]))
-                print("\nCount of unique values in %s: %d" % (col_to_count,distinct_val_count))
+                print("\nCount of unique values in %s: %d" % (col_to_count,\
+                    distinct_val_count))
                 
                  # measure running time
                 t_1 = timeit.default_timer()
@@ -110,7 +144,11 @@ class ExploreData:
         col_to_search = ""
         while col_to_search != 'Q':
             try:
-                col_to_search = input("\nEnter the column you'd like to search inside of (q to quit): ").upper()
+                print("-----------------------")
+                print("Search Column")
+                print("*************")
+                col_to_search = input("\nEnter the column you'd like to search" +
+                                      " inside of (q to quit): ").upper()
                 if col_to_search == 'Q':
                     break
                 value = str((input("Enter the value to find: "))).upper()
@@ -132,34 +170,41 @@ class ExploreData:
                     
                 # if index_list is not empty
                 if index_list:
+                    print("-----------------------")
                     print("'%s' found %d times in %s" % (value, matches, col_to_search))
                     first_six = index_list[0:6]
                     print("First six rows:", first_six)
                      # measure running time
                     t_1 = timeit.default_timer()
                     elapsed_time = (t_1 - t_0)
-                    print("\nSearch successful time to search: %.4f secs" % elapsed_time)
+                    print("\nSearch successful time to search: %.4f secs" %\
+                        elapsed_time)
                 
                 else:
-                    print("Value not found")
+                    print(" %s not found in %s" % (value,col_to_search))
             except:
                 print("Searching error - Column and/or Value not found")
         ExploreData.exploreDataMenu()
         
     # sorts specified column   
     def sortColumns():
-        print("-----------------------")
+        
         col_to_sort = ""
         sorting_method = 1
                                       
         while col_to_sort != 'Q':
             try:
+                print("-----------------------")
+                print("Sort columns")
+                print("*************")
                 # prompt user for which column to sort (Ascending or descending)
-                col_to_sort = input("\nEnter a column you'd like to be SORTED (q to quit): ").upper()
+                col_to_sort = input("\nEnter a column you'd like to be SORTED "+
+                                    "(q to quit): ").upper()
                 if col_to_sort == 'Q':
                     break
                 
-                sorting_method = str(input("Enter 1 for Ascending order or 2 for Descending: "))
+                sorting_method = str(input("Enter 1 for Ascending order or 2 for" +
+                                           " Descending: "))
                 t_0 = timeit.default_timer()
                               
                 # ascending sort
@@ -168,7 +213,8 @@ class ExploreData:
     
                 # decending sort
                 elif sorting_method == '2':
-                    data_file.sort_values(by = col_to_sort,ascending = False, inplace = True)
+                    data_file.sort_values\
+                        (by = col_to_sort,ascending = False, inplace = True)
                     
                 # start again  
                 else:
@@ -179,7 +225,7 @@ class ExploreData:
                 rows = data_file[col_to_sort].tolist()
                 num_of_rows= len(rows)
                 middle_row = int(num_of_rows/2)    
-                        
+                print("-----------------------")        
                 # prints the first 5, middle 5, and last 5 rows 
                 for i in rows[:5]:
                     print(i)
@@ -193,25 +239,30 @@ class ExploreData:
                 # calculate run time   
                 t_1 = timeit.default_timer()
                 elapsed_time = (t_1 - t_0)
-                print("\n%s Sorted successfully, time to sort: %.4f secs" % (col_to_sort,elapsed_time))
+                print("\n%s Sorted successfully, time to sort: %.4f secs" % \
+                    (col_to_sort,elapsed_time))
+               
                    
-            except:
+            except KeyError:
                 print("Invalid column please try again") 
         ExploreData.exploreDataMenu()
         
     # prints specified column   
-    def printColmuns():
+    def printColumns():
     
-        print("-----------------------")
         col_to_print = ""
         num_of_rows = 0
         while col_to_print != 'Q':
             try:
-                # Prompt user for a Column to print, and the total number of rows to be printed
-                col_to_print = input("Enter a Column you'd like to be PRINTED (q to quit): ").upper()
+                print("-----------------------\n")
+                print("Print columns")
+                print("*************")
+                col_to_print = input("Enter a Column you'd like to be PRINTED "+
+                                     "(q to quit): ").upper()
                 if col_to_print == 'Q':
                     break
-                num_of_rows = int(input("                                     How many rows 100,500, or 5000?: "))
+                num_of_rows = int(input("                          "+
+                                        "How many rows 100,500, or 5000?: "))
                 # start timer
                 t_0 = timeit.default_timer()
                 # store column in list
@@ -226,10 +277,10 @@ class ExploreData:
                         rows_2 = rows[:num_of_rows]
                     else:
                         print("** Error - enter 100, 500, or 5000")
-                        ExploreData.printColmuns()
+                        ExploreData.printColumns()
                 else:
                     print("Not enough rows in Column")
-                    ExploreData.printColmuns()
+                    ExploreData.printColumns()
                 # header
                 print(col_to_print)
                 print("***************")
@@ -241,29 +292,42 @@ class ExploreData:
                 # measure run time
                 t_1 = timeit.default_timer()
                 elapsed_time = (t_1 - t_0)
-                print("\nPrint successful time to print: %.4f secs" % elapsed_time)
+                print("\n%s printed successfully, time to print: %.4f secs" %\
+                    (col_to_print,elapsed_time))
+                
+                ExploreData.listColumns()
                 
             except KeyError:
                 print("Column not found, try again")
-                ExploreData.printColmuns()
+                ExploreData.printColumns()
+            except ValueError:
+                print("Error - Enter only numbers for number of rows")  
         ExploreData.exploreDataMenu()
 
     # Menu for ExporeData Class
     def exploreDataMenu():
         print("\nExplore Data")
         print("**************")
-        print(" 1. List & Drop columns \n 2. Count distinct values\n 3. Search for any value in a specified column \n 4. Sort columns \n 5. Print Coumns \n 6. Return to main menu")
+        print(" 1. List & Drop columns \n 2. Count distinct values\n 3. Search for"+
+              " any value in a specified column \n 4. Sort columns \n 5. Print "+
+              "Columns \n 6. Return to main menu")
         operation = str(input("\nSelect an Operation: "))
+        
         if operation == '1':
             ExploreData.listColumns()
+            ExploreData.dropColumns()
         elif operation == '2':
+            ExploreData.listColumns()
             ExploreData.countDistinctValues()
         elif operation == '3':
+            ExploreData.listColumns()
             ExploreData.searchColumn()
         elif operation == '4':
+            ExploreData.listColumns()
             ExploreData.sortColumns()
         elif operation == '5':
-            ExploreData.printColmuns()
+            ExploreData.listColumns()
+            ExploreData.printColumns()
         elif operation == '6':
             mainMenu()
         else:
@@ -288,7 +352,7 @@ class DescribeData:
                 lowest = i
             elif lowest > i:
                 lowest = i 
-        print("Mininum: %.6f" % (lowest))
+        print("Mininum: %.10f" % (lowest))
         
     # Finds the maximum in a given column   
     def maxColumn(col_to_max):
@@ -299,9 +363,8 @@ class DescribeData:
                 highest = i
             elif i > highest:
                 highest = i 
-        print("Maximum: %.6f" %(highest))
+        print("Maximum: %.10f" %(highest))
         
-    #will optimize later by removing a number from the entire list after it has been checked
     # Finds the mode of a given column
     def modeColumn(col_to_mode):
         modes = []
@@ -405,7 +468,8 @@ class DescribeData:
         values.sort()
         
         size = len(values)
-        #find the index of the value based on its percentile- size of list * percentage /100
+        #find the index of the value based on its percentile
+        # size of list * percentage /100
         result20 = values[int(math.ceil((size*20) / 100)) -1]
         result40 = values[int(math.ceil((size*40) / 100)) -1]
         result60 = values[int(math.ceil((size*60) / 100)) -1]
@@ -418,10 +482,14 @@ class DescribeData:
 
     # Menu for DescibeData Class
     def describeDataMenu():
-        print("\nDescribe Data")
-        print("**************")
+        
         try:
-            col_to_describe = str(input("\nEnter the column to describe (q to quit): ")).upper()
+            ExploreData.listColumns()
+            print("-----------------------")
+            print("\nDescribe Data")
+            print("**************")
+            col_to_describe = str(input("\nEnter the column to describe "+
+                                        "(q to quit): ")).upper()
             
             if (col_to_describe == 'Q'):
                 mainMenu()
@@ -458,23 +526,27 @@ class DescribeData:
              # measure running time
             t_1 = timeit.default_timer()
             elapsed_time = (t_1 - t_0)
-            print("\nStats printed successfully time to print: %.4f secs" % elapsed_time)
+            print("\nStats printed successfully time to print: %.4f secs" % \
+                elapsed_time)
             
             # returns to main menu
             mainMenu()
         except TypeError:
-            print("\n** Error - No numbers in column, could not perform all operations **")
-            DescribeData.describeDataMenu()
+            print("\n** Error - No numbers in column, could not perform all"+
+                  " operations **")
+        
         except KeyError:
-            print("\n**Error - Column not found")
-            DescribeData.describeDataMenu()
+            print("\n** Column not found **")
+    
             
 class Analysis:
     
     # Solves question 1
     def question1():
         
-        print("1. What was the month of the year in 2019 with most1 delays overall? And how many delays were recorded in that month?")
+        print("1. What was the month of the year in 2019 with most delays overall?"+
+              " And how many delays were recorded in that month?")
+        print("-----------------------")
         month_dict = {
             "January ": 0,"February": 0,"March": 0,"April ": 0, "May": 0,
             "June": 0,"July ": 0,"August": 0,"September": 0,"October ": 0,
@@ -485,10 +557,11 @@ class Analysis:
         delay_count = []
         
         # A Delay has occured when there is a 1 in the DEP_DEL15 Column
-        # creates a new dataframe comprised of only rows with a delay for a given month
-        # the number of rows of that dataframe is equal to the total delays for that month
+        # creates new dataframe of only rows with a delay for a given month
+        # number of rows of dataframe = total delays for that month
         for i in range (1,13):
-            delays_in_month = data_file[(data_file['MONTH'] == i) & (data_file['DEP_DEL15'].isin([1]))]
+            delays_in_month = data_file[(data_file['MONTH'] == i) & (data_file\
+                ['DEP_DEL15'].isin([1]))]
             delay_count.append(len(delays_in_month.index))
             
         index = 0
@@ -500,13 +573,15 @@ class Analysis:
         # print answer
         month_with_max_delays = max(month_dict, key = month_dict.get)
         count_max_delays = max(month_dict.values())
-        print("\n %s had the most delays in 2019 with a total count of: %d delays\n" % (month_with_max_delays,count_max_delays))
+        print("%s had the most delays in 2019 with a total count of: %d delays\n" \
+            % (month_with_max_delays,count_max_delays))
         
      # Solves question 2
     def question2():
         
-        print("2. What was the day in 2019 with most delays overall? And how many delays were recorded in that day? ")
-        
+        print("2. What was the day in 2019 with most delays overall? And how many "+
+              "delays were recorded in that day? ")
+        print("-----------------------")
         weekDict = {
             "Monday": 0,"Tuesday": 0,"Wednesday": 0,"Thursday": 0, "Friday": 0,
             "Saturday": 0,"Sunday ": 0,
@@ -517,7 +592,8 @@ class Analysis:
         # creates a new dataframe comprised of only rows with a delay for a given day
         # the number of rows of that dataframe is equal to the total delays for that day
         for i in range (1,8):
-            delays_in_week = data_file[(data_file['DAY_OF_WEEK'] == i) & (data_file['DEP_DEL15'].isin([1]))]
+            delays_in_week = data_file[(data_file['DAY_OF_WEEK'] == i) & (data_file\
+                ['DEP_DEL15'].isin([1]))]
             delay_count.append(len(delays_in_week.index))
             
         index = 0
@@ -529,12 +605,15 @@ class Analysis:
         # print answer
         day_with_max_delays = max(weekDict, key = weekDict.get)
         count_max_delays = max(weekDict.values())
-        print("\n %s had the most delays in 2019 with a total count of: %d delays\n" % (day_with_max_delays,count_max_delays))
+        print("%s had the most delays in 2019 with a total count of: %d delays\n" % \
+            (day_with_max_delays,count_max_delays))
         
     # Solves question 3
     def question3():
         
-        print("3. What airline carrier experience the most delays in January, July and December ")
+        print("3. What airline carrier experience the most delays in January, July"+
+              " and December ")
+        print("-----------------------")
         unique_airlines = []
         air_lines = data_file['CARRIER_NAME'].tolist()
         
@@ -550,11 +629,12 @@ class Analysis:
         months_to_check = (1,7,12)
         
         # A Delay has occured when there is a 1 in the DEP_DEL15 Column
-        # creates a new dataframe comprised of only rows with a delay for a given airline
-        # the number of rows of that dataframe is equal to the total delays for that day
+        # creates new dataframe of only rows with a delay for a given airline
+        # the number of rows of = total delays for that day
         for i in airline_carrier_dict:
             for j in months_to_check:
-                delays_in_airline = data_file[(data_file['CARRIER_NAME'] == i) & (data_file['DEP_DEL15']== 1) & (data_file['MONTH'] == j)]
+                delays_in_airline = data_file[(data_file['CARRIER_NAME'] == i) & \
+                    (data_file['DEP_DEL15']== 1) & (data_file['MONTH'] == j)]
                 delay_count.append(len(delays_in_airline.index))
                 
         index = 0
@@ -572,33 +652,44 @@ class Analysis:
         july_max_delays = 0
         dec_max_delays = 0
         
-        # iterates through the number of delays in airline_carrier_dict, finds the max for each month
+        # iterates through the number of delays in airline_carrier_dict
+        # finds the max for each month
         for every_list in airline_carrier_dict.values():
             for each_element in every_list:
                 each_element = every_list[0]
                 element2 = every_list[1]
                 element3 = every_list[2]
-                jan_max_delays = each_element if each_element > jan_max_delays else jan_max_delays
-                july_max_delays = element2 if element2> july_max_delays else july_max_delays
-                dec_max_delays = element3 if element3 > dec_max_delays else dec_max_delays
+                jan_max_delays = each_element if each_element > jan_max_delays \
+                    else jan_max_delays
+                july_max_delays = element2 if element2> july_max_delays \
+                    else july_max_delays
+                dec_max_delays = element3 if element3 > dec_max_delays \
+                    else dec_max_delays
                 
         
-        airline_with_max_delays = max(airline_carrier_dict, key = airline_carrier_dict.get)
+        airline_with_max_delays = max(airline_carrier_dict, key = \
+            airline_carrier_dict.get)
         count_max_delays = max(airline_carrier_dict.values())
-        airline_with_max_delays = (list(airline_carrier_dict.keys())[list(airline_carrier_dict.values()).index(count_max_delays)])
+        airline_with_max_delays = (list(airline_carrier_dict.keys())\
+            [list(airline_carrier_dict.values()).index(count_max_delays)])
         
         # print answer
-        print("%s had the most delays in January with a total count of: %d" % (airline_with_max_delays,jan_max_delays))
-        print("%s had the most delays in July with a total count of: %d" % (airline_with_max_delays,july_max_delays))
-        print("%s had the most delays in December with a total count of: %d\n" % (airline_with_max_delays,dec_max_delays))
+        print("%s had the most delays in January with a total count of: %d" % \
+            (airline_with_max_delays,jan_max_delays))
+        print("%s had the most delays in July with a total count of: %d" % \
+            (airline_with_max_delays,july_max_delays))
+        print("%s had the most delays in December with a total count of: %d\n" % 
+              (airline_with_max_delays,dec_max_delays))
 
     # Solves question 4
     def question4():
         
-        print("4. What was the average plane age of all planes with delays operated by American Airlines inc.")
-        
+        print("4. What was the average plane age of all planes with delays operated"+
+              " by American Airlines inc.")
+        print("-----------------------")
         # pulls columns with matching data and creates new dataframe with that data       
-        american_airline_delays = data_file[(data_file['CARRIER_NAME'] == 'American Airlines Inc.') & (data_file['DEP_DEL15']== 1)]
+        american_airline_delays = data_file[(data_file['CARRIER_NAME'] ==\
+            'American Airlines Inc.') & (data_file['DEP_DEL15']== 1)]
         # puts plane ages into a list
         plane_ages = american_airline_delays['PLANE_AGE'].tolist()
         # gets number of planes
@@ -608,27 +699,33 @@ class Analysis:
         # calculate average
         average_age = sum_age/total_planes
         # print answer
-        print("\nThe average plane age of all planes with delays operated American Airlines is: %.3f\n" % (average_age))
+        print("The average plane age of all planes with delays operated American"+
+              " Airlines is: %.3f\n" % (average_age))
         
     # Solves question 5
     def question5():
         
-        print("5. How many planes were delayed for more than 15 minutes during days with 'heavy snow' (Days when the inches of snow on ground were 15 or more) )? ")
-        
-        # pulls columns with matching data and creates a new dataframe with that data  
-        planes_delayed = data_file[(data_file['SNOW'] >= 15) & (data_file['DEP_DEL15']== 1)]
+        print("5. How many planes were delayed for more than 15 minutes during "+
+              "days with 'heavy snow' (Days when the inches of snow on ground"+
+              " were 15 or more) )? ")
+        print("-----------------------")
+        # pulls columns with matching data and creates a new dataframe   
+        planes_delayed = data_file[(data_file['SNOW'] >= 15) & (data_file\
+            ['DEP_DEL15']== 1)]
         
         
         # total count of delayed planes 
         num_of_planes = len(planes_delayed.index)
         
         # print answer
-        print("\n%d planes were delayed for more than 15mins due to heavy snow\n" % (num_of_planes))
+        print("%d planes were delayed for more than 15mins due to heavy snow\n" % \
+            (num_of_planes))
         
     # Solves question 6  
     def question6():
         
        print("6. What are the 5 Airports that had the most delays in 2019?")
+       print("-----------------------")
        unique_airports = []
        delay_count = []
        air_ports = data_file['DEPARTING_AIRPORT'].tolist()
@@ -643,7 +740,8 @@ class Analysis:
       
        # counts delays for every airport
        for every in unique_airports:
-           delays = data_file[(data_file['DEP_DEL15']== 1) & (data_file['DEPARTING_AIRPORT'] == every)]
+           delays = data_file[(data_file['DEP_DEL15']== 1) & (data_file\
+               ['DEPARTING_AIRPORT'] == every)]
            delay_count.append(len(delays.index))
         
        index = 0
@@ -657,17 +755,19 @@ class Analysis:
        # only accounts for departing airports, not previous airports
        top_five_airports = sorted(airport_dct, key=airport_dct.get, reverse=True)[:5]
        
-       print("\nThe five airports with the most delays in 2019 are:")
+       print("Top 5 airports with the most delays in 2019:")
        print("***************************************************")
        for every_port in top_five_airports:
            print("%s with %d delays " % (every_port,airport_dct.get(every_port)))
-                   
-       print("\n")
        
+       print('\n')
+                
      # Solves question 7
     def question7():
         
-        print("7. How many airlines are included in the data set? Print the first 5 in alphabetical order.")
+        print("7. How many airlines are included in the data set? Print the first"+
+              " 5 in alphabetical order.")
+        print("-----------------------")
         # find unique airlines
         unique_airlines = []
         airlines = data_file['CARRIER_NAME'].tolist()
@@ -679,17 +779,19 @@ class Analysis:
         sorted_list = sorted(unique_airlines)
         amount = len(sorted_list)
         first_five = sorted_list[0:5]
-        print("\n %d Arlines, and the five first airlines in alphabetical order are:" %(amount))
+        print("%s Arlines in the data set." % (amount))
+        print("\nFive first airlines in alphabetical order:")
         print("***************************************")
         for airline in first_five:
             print(airline)
-
-        print('\n')
+        print('\n')  
         
     # Solves question 8
     def question8():
         
-        print("8. How many departing airports are included in the data set? Print the last 5 in alphabetical order.")
+        print("8. How many departing airports are included in the data set? Print"+
+              "the last 5 in alphabetical order.")
+        print("-----------------------")
         # find unique airlines
         unique_dep_airports = []
         dep_airports = data_file['DEPARTING_AIRPORT'].tolist()
@@ -701,17 +803,19 @@ class Analysis:
         sorted_list = sorted(unique_dep_airports)
         amount = len(sorted_list)
         last_five = sorted_list[(len(sorted_list)-5):len(sorted_list)]
-        print("\n %d departing airports, and the last five departing airports alphabetical order are:" %(amount))
-        print("***************************************")
+        print("%d departing airports in the data set." %(amount))
+        print("\nLast five departing airports in alphabetical order:")
+        print("***************************************************")
         for airline in last_five:
             print(airline)
-
         print('\n')
-
+        
     # Solves question 9
     def question9():
         
-        print("9. What airline has the oldest plane? Print the five airlines with oldest planes recorded")
+        print("9. What airline has the oldest plane? Print the five airlines with "+
+              "the oldest planes recorded")
+        print("-----------------------")
         plane_ages = data_file['PLANE_AGE'].tolist()
         unique_planes = []
         
@@ -722,18 +826,27 @@ class Analysis:
 
         airlines_with_old_planes = []
         for i in sorted_list:
-            if data_file.loc[data_file['PLANE_AGE'] == i]['CARRIER_NAME'].values[0] not in airlines_with_old_planes:
-                airlines_with_old_planes.append(data_file.loc[data_file['PLANE_AGE'] == i]['CARRIER_NAME'].values[0])
+            if data_file.loc[data_file['PLANE_AGE'] == i]['CARRIER_NAME'].values[0]\
+                not in airlines_with_old_planes:
+                airlines_with_old_planes.append(data_file.loc[data_file\
+                    ['PLANE_AGE']== i]['CARRIER_NAME'].values[0])
                 if len(airlines_with_old_planes) == 5:
                     break
-        print("\n %s was the airline with oldest plane at: %d years, and the five airlines with oldest planes were:" %(airlines_with_old_planes[0], sorted_list[0]))
+        print("%s was the airline with oldest plane at: %d years" \
+            %(airlines_with_old_planes[0],sorted_list[0]))
+        print("\nTop five airlines with oldest planes:")
+        print("***************************************")
         for i in airlines_with_old_planes:
             print(i)
-         
+        print('\n')
+        
     # Solves question 10
     def question10():
         
-        print("\n9. What is the airport that averaged the greatest number of passengers recorded in 2019? Print the 5 airport that averaged the greatest number of passengers in 2019.")
+        print("\n10. What is the airport that averaged the greatest number of "+
+              "passengers recorded in 2019? Print the 5 airport that averaged "+
+              "the greatest number of passengers in 2019.")
+        print("-----------------------")
         passengers = data_file['AVG_MONTHLY_PASS_AIRPORT'].tolist()
         unique_pass = []
         
@@ -744,18 +857,26 @@ class Analysis:
             
         airport_amounts = []
         for i in sorted_list:
-            if data_file.loc[data_file['AVG_MONTHLY_PASS_AIRPORT'] == i]['DEPARTING_AIRPORT'].values[0] not in airport_amounts:
-                airport_amounts.append(data_file.loc[data_file['AVG_MONTHLY_PASS_AIRPORT'] == i]['DEPARTING_AIRPORT'].values[0])
+            if data_file.loc[data_file['AVG_MONTHLY_PASS_AIRPORT'] == i]\
+                ['DEPARTING_AIRPORT'].values[0] not in airport_amounts:
+                airport_amounts.append(data_file.loc[data_file\
+                    ['AVG_MONTHLY_PASS_AIRPORT'] == i]['DEPARTING_AIRPORT'].values[0])
                 if len(airport_amounts) == 5:
                     break
-        print("\n %s was the airport with most average passengers at  %d passengers, and the five airports with most were:" %(airport_amounts[0], sorted_list[0]))
+        print("%s airport had the hihgest average passengers at  %d passengers"\
+            %(airport_amounts[0],sorted_list[0]))
+        print("\nTop five airports with highest averaged passengers:")
+        print("***************************************")
         for i in airport_amounts:
             print(i)
-
+        print('\n')
     # Solves question 11
     def question11():
-        print("\n11. What is the airline that averaged the greatest number of employees (Flight attendants and ground service) in 2019? Print the 5 airlines that averaged the greatest number of employees in 2019.")
-
+        print("\n11. What is the airline that averaged the greatest number of "+
+              "employees (Flight attendants and ground service) in 2019? Print"+
+              "the 5 airlines that averaged the greatest number of employees in"+
+              " 2019.")
+        print("-----------------------")
         employees = data_file['FLT_ATTENDANTS_PER_PASS'].tolist()
         unique_employees = []
 
@@ -767,45 +888,46 @@ class Analysis:
 
         employee_amounts = []
         for i in sorted_list:
-            if data_file.loc[data_file['FLT_ATTENDANTS_PER_PASS'] == i]['CARRIER_NAME'].values[0] not in employee_amounts:
-                employee_amounts.append(data_file.loc[data_file['FLT_ATTENDANTS_PER_PASS'] == i]['CARRIER_NAME'].values[0])
+            if data_file.loc[data_file['FLT_ATTENDANTS_PER_PASS'] == i]\
+                ['CARRIER_NAME'].values[0] not in employee_amounts:
+                employee_amounts.append(data_file.loc[data_file\
+                    ['FLT_ATTENDANTS_PER_PASS'] == i]['CARRIER_NAME'].values[0])
                 if len(employee_amounts) == 5:
                     break
-        print("\n %s was the airline with most average employees at  %.7f employees per passenger, and the five airlines with most were:" %(employee_amounts[0], sorted_list[0]))
+        print("%s was the airline with the most average employees at %.7f" % \
+            (employee_amounts[0], sorted_list[0]))
+        print("\nTop five airlines with highest averaged employees:")
+        print("**************************************************")
         for i in employee_amounts:
             print(i)
-     
+        print('\n')
     # menu for Analysis Class   
     def analysisMenu():
-        print("\nAnalysis")
-        print("*********")
-        t_0 = timeit.default_timer()
-        Analysis.question1()
         
-        Analysis.question2()
-        
-        Analysis.question3()
-       
-        Analysis.question4()
-       
-        Analysis.question5()
-        
-        Analysis.question6()
-       
-        Analysis.question7()
-       
-        Analysis.question8()
-        
-        Analysis.question9()
-       
-        Analysis.question10()
-        
-        Analysis.question11()
-        
-        t_1 = timeit.default_timer()
-        elapsed_time = (t_1 - t_0)
-        print("\nQuestions answered successfully time to answer: %.4f secs" % elapsed_time)
-        mainMenu()
+        try:
+            print("\nAnalysis")
+            print("*********\n")
+            t_begin = timeit.default_timer()
+            # call all the question functions
+            for i in range (1,12):
+                t_1 = timeit.default_timer()
+                func_name = "question"+str(i)
+                func_to_call = getattr(Analysis,func_name)
+                func_to_call()
+                t_2 = timeit.default_timer()
+                elapsed_time = (t_2 - t_1)
+                print("- Question%d, time to answer: %.4f secs\n\n" % (i,elapsed_time))
+                
+            # total time taken    
+            t_final = timeit.default_timer()
+            total_time = (t_final - t_begin)
+            print("Total time to answer: %.4f secs" % \
+                total_time)
+            
+            mainMenu()
+            
+        except KeyError:
+           print("** Error - Required Column(s) Missing **")
          
 def mainMenu():
     while True:
@@ -843,6 +965,6 @@ def mainMenu():
            loadFile()
        except NameError as ne:
            print(ne)
-        
+       
 # starts the program
 mainMenu()
