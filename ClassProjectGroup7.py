@@ -18,11 +18,6 @@ import os
 
 global data_file
 
-# default file loading
-data_file = pd.read_csv("Airline_data.csv")
-# removes the index column
-blankIndex = [''] * len(data_file)
-data_file.index = blankIndex
 
 # loads user specified file into dataframe
 def  loadFile():
